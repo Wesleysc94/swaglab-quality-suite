@@ -1,86 +1,73 @@
-# Glossário de QA — swaglab-quality-suite
+# Glossário de QA
 
-Referência didática dos termos de Quality Assurance utilizados neste projeto.
-Cada termo é explicado com contexto prático baseado nos testes desta suite.
+Termos usados neste projeto, explicados de forma direta. Útil para quem está estudando.
 
 ---
 
 ## Assertion (Asserção)
 
-Uma verificação que confirma se o sistema se comportou como esperado.
+Uma verificação que confirma se o resultado foi o esperado.
 
-**Em português:** "Afirmação" ou "verificação".
-
-**Exemplos neste projeto:**
 ```typescript
-// Playwright — verifica se chegou na URL correta após o login
+// O sistema deve estar na URL do inventário após o login
 await expect(page).toHaveURL(/inventory\.html/);
-
-// pytest — verifica se a API retornou 200
-assert response.status_code == 200, "Deve retornar 200 OK"
 ```
 
-**Regra de ouro:** Uma assertion sem mensagem descritiva é uma oportunidade perdida. A mensagem deve explicar o que o sistema **deveria** ter feito, não o que ele fez.
+```python
+# A API deve retornar 200 quando a listagem funciona
+assert response.status_code == 200, "Listagem deve retornar 200"
+```
+
+A mensagem no assert existe por um motivo: quando o teste falha, você lê a mensagem e já sabe o que era esperado.
 
 ---
 
-## Bug Report (Relatório de Defeito)
+## Bug Report
 
-Documento formal que descreve um defeito encontrado, com informações suficientes para que qualquer pessoa possa reproduzi-lo.
+Documento que descreve um defeito com informações suficientes para qualquer pessoa reproduzir.
 
-**Campos obrigatórios:**
-- **Passos para reproduzir:** sequência exata de ações
-- **Resultado atual:** o que acontece (o bug)
-- **Resultado esperado:** o que deveria acontecer
-- **Severidade:** o quanto impacta o sistema
-- **Evidência:** screenshot, log, vídeo
+Campos essenciais: passos de reprodução, resultado atual, resultado esperado, evidência, severidade.
 
-**Exemplos neste projeto:** `manual/bug-reports/BUG-001` a `BUG-006`
+Sem esses campos, o desenvolvedor não consegue reproduzir e o bug fica em aberto por semanas.
 
 ---
 
 ## Caso de Teste
 
-Especificação de uma condição a ser verificada, com: pré-condições, passos, dados de entrada e resultado esperado.
+Especificação de uma condição a verificar: pré-condições, passos, dados de entrada e resultado esperado.
 
-**Diferença entre caso de teste e teste automatizado:**
-- **Caso de teste:** a especificação (pode ser manual ou automatizado)
-- **Teste automatizado:** a implementação executável do caso de teste
-
-**Exemplo:** O teste `'deve exibir 6 produtos no inventário'` é tanto um caso de teste quanto um teste automatizado.
+Um caso de teste pode ser executado manualmente ou automatizado. Os testes em `e2e/tests/` são casos de teste automatizados.
 
 ---
 
-## CI/CD (Integração Contínua / Entrega Contínua)
+## CI/CD
 
-- **CI (Continuous Integration):** prática de integrar código frequentemente, com testes automáticos a cada push
-- **CD (Continuous Delivery/Deployment):** extensão da CI que automatiza o deploy após os testes passarem
+**CI (Integração Contínua):** a cada push, testes são executados automaticamente.
 
-**Neste projeto:** Os workflows em `.github/workflows/` implementam CI — ao fazer push, os testes são executados automaticamente.
+**CD (Entrega Contínua):** extensão da CI que automatiza o deploy após os testes.
+
+Neste projeto, os workflows em `.github/workflows/` implementam CI — empurrou código, os testes rodam.
 
 ---
 
 ## Cenário Negativo
 
-Teste que verifica como o sistema se comporta com entradas inválidas, inesperadas ou nos limites do que é aceito.
+Teste que verifica o comportamento com entradas inválidas ou fora do esperado.
 
-**Por que é importante:** Sistemas frequentemente têm boa cobertura do "caminho feliz" mas falham nos casos negativos. Explorar cenários negativos revela bugs de validação e tratamento de erros.
+Exemplo: login com senha errada, checkout sem preencher campos, buscar usuário que não existe.
 
-**Exemplos neste projeto:**
-- Login com credenciais inválidas → deve exibir mensagem de erro
-- Checkout sem preencher campos → deve bloquear a navegação
+Sistemas geralmente têm boa cobertura do fluxo feliz. Os cenários negativos revelam como o sistema falha — e se ele falha bem ou mal.
 
 ---
 
 ## Data-test attribute
 
-Atributo HTML adicionado especificamente para facilitar a seleção de elementos em testes automatizados. Convencionalmente nomeado `data-test`, `data-testid` ou `data-cy`.
+Atributo HTML criado especificamente para testes: `data-test="login-button"`.
 
-**Vantagem sobre seletores CSS:** Não muda com redesigns de UI. Uma classe CSS pode mudar de `btn-primary` para `button-blue`, mas `data-test="login-button"` permanece estável enquanto o elemento existir.
+A vantagem sobre seletores CSS é estabilidade: uma classe CSS muda com redesign, mas `data-test` só muda se alguém intencionalmente remover. O SauceDemo usa isso em toda a interface.
 
-**Exemplo neste projeto:**
 ```typescript
-// Seletor estável — não quebra com mudanças de estilo
+// Estável — não quebra com mudanças de estilo
 this.loginButton = page.locator('[data-test="login-button"]');
 ```
 
@@ -88,150 +75,111 @@ this.loginButton = page.locator('[data-test="login-button"]');
 
 ## E2E (End-to-End)
 
-Teste que verifica um fluxo completo do sistema, da interface do usuário ao banco de dados e de volta, simulando o comportamento real de um usuário.
+Teste que simula o caminho completo de um usuário real — da interface até o banco de dados e de volta.
 
-**Característica:** São os testes mais lentos e frágeis (dependem de browser, rede, etc.), mas têm o maior valor de confiança — testam o sistema como o usuário vê.
-
-**Exemplos neste projeto:** Toda a suite em `e2e/tests/` — login, adicionar ao carrinho, fazer checkout completo.
+São os testes mais lentos e mais frágeis, mas também os que dão mais confiança: se o fluxo passa, o usuário consegue fazer o que precisa.
 
 ---
 
 ## Fixture (pytest)
 
-Função que prepara o ambiente antes de um teste e opcionalmente executa limpeza depois. O pytest injeta fixtures automaticamente nos testes que as declaram como parâmetros.
+Função que prepara o ambiente antes de um teste e faz limpeza depois.
 
-**Exemplo neste projeto:**
 ```python
 @pytest.fixture
 def client():
     with httpx.Client(base_url=BASE_URL) as c:
-        yield c  # ← fornece o cliente para o teste
-    # conexão fechada automaticamente aqui
+        yield c  # o cliente é entregue ao teste aqui
+    # a conexão é fechada automaticamente aqui
 ```
 
-**Analogia TypeScript:** Similar ao `beforeEach()` do Playwright/Jest, mas mais flexível e reutilizável entre múltiplos arquivos de teste via `conftest.py`.
+O pytest injeta a fixture nos testes que declaram o parâmetro com o mesmo nome. Sem fixture, você copiaria esse código em cada teste.
 
 ---
 
-## Flaky Test (Teste Instável)
+## Flaky Test
 
-Teste que passa às vezes e falha outras vezes sem alteração no código — resultado não determinístico.
+Teste que passa às vezes e falha outras, sem mudança no código.
 
-**Causas comuns:**
-- Dependência de tempo (delays, `sleep()`)
-- Dados de teste compartilhados entre testes
-- Dependência de serviços externos lentos ou instáveis
-- Condições de corrida em testes paralelos
+Causas comuns: dependência de tempo, dados compartilhados entre testes, serviços externos instáveis, condição de corrida em paralelo.
 
-**Impacto:** Testes flaky destroem a confiança no CI — quando um teste falha, o time não sabe se é um bug real ou instabilidade. Devem ser corrigidos ou removidos.
-
-**Neste projeto:** Configuramos `retries: 0` no playwright.config.ts propositalmente — preferimos ver falhas reais sem mascarar flakiness com retries.
+Testes flaky destroem a confiança no CI — quando falha, ninguém sabe se é bug real ou instabilidade. Devem ser corrigidos ou removidos.
 
 ---
 
 ## Go / No Go
 
-Decisão binária ao final de um ciclo de testes: o sistema está pronto para ir para produção (Go) ou não (No Go)?
+Decisão ao fim de uma rodada de testes: o produto está pronto para ir a produção (Go) ou não (No Go)?
 
-**Critérios típicos de Go:**
-- Todos os testes críticos passando
-- Bugs de severidade crítica/alta resolvidos
-- Cobertura de testes acima do mínimo definido
-- Aprovação dos stakeholders
-
-**Critérios de No Go neste projeto:**
-- BUG-002 (Last Name bloqueado) → No Go (impede checkout)
-- BUG-003 + BUG-004 (error_user) → No Go (impede compra)
-- BUG-001 (imagens erradas) → No Go (impacta UX severamente)
+Não é binário simples — é uma comunicação de risco. Um BUG-002 que bloqueia o checkout é No Go. Um BUG-006 de layout é Go com observação.
 
 ---
 
 ## Page Object Model (POM)
 
-Padrão de design para testes E2E que encapsula os seletores e ações de uma página em uma classe. Os testes interagem com a página através dos métodos do Page Object, não diretamente com seletores.
+Padrão onde os seletores e ações de uma página ficam numa classe separada.
 
-**Benefício principal:** Resistência a mudanças de DOM — se o seletor de um botão mudar, o ajuste é feito apenas no Page Object, não em todos os testes que usam aquele botão.
+Sem POM, o seletor `[data-test="login-button"]` aparece em dez testes. Com POM, fica em `LoginPage.ts` e os testes chamam `loginPage.login()`.
 
-**Estrutura neste projeto:**
-```
-pages/
-├── LoginPage.ts     → seletores e ações de /
-├── InventoryPage.ts → seletores e ações de /inventory.html
-├── CartPage.ts      → seletores e ações de /cart.html
-├── CheckoutPage.ts  → seletores e ações de /checkout-step-*.html
-└── CompletePage.ts  → seletores e ações de /checkout-complete.html
-```
+Quando o HTML mudar, você atualiza só o Page Object.
 
 ---
 
 ## Pipeline
 
-Sequência automatizada de etapas que ocorre após um evento (push, PR, etc.) no repositório, tipicamente: checkout → install → build → test → deploy.
+Sequência automatizada de etapas após um evento. No GitHub Actions:
 
-**Neste projeto:** Os arquivos `.github/workflows/` definem dois pipelines:
-1. **e2e-tests.yml:** checkout → install Node → install Playwright → run tests
-2. **api-tests.yml:** checkout → install Python → pip install → pytest
+```
+push → checkout do código → instalar dependências → executar testes → salvar relatório
+```
 
 ---
 
 ## Selector (Seletor)
 
-String que identifica um elemento HTML na página para interação em testes automatizados.
+String que identifica um elemento HTML para interação.
 
-**Tipos e qualidade (do melhor para o pior):**
-1. `data-test="login-button"` ← melhor (criado para testes)
-2. `role="button" name="Login"` ← bom (semântico)
-3. `#login-btn` ← ok (ID, estável se não mudar)
-4. `.btn.btn-primary` ← ruim (classes mudam com redesign)
-5. `//div[3]/button[1]` ← péssimo (XPath frágil, quebra com qualquer mudança de DOM)
+Do mais estável ao mais frágil:
+1. `[data-test="login-button"]` — criado pra testes, não muda com redesign
+2. `role="button" name="Login"` — semântico, relativamente estável
+3. `#login-btn` — ID, ok se não mudar
+4. `.btn-primary` — classe CSS, quebra com redesign
+5. `//div[3]/button[1]` — XPath por posição, quebra com qualquer mudança de DOM
 
 ---
 
 ## Severidade vs. Prioridade
 
-Dois conceitos frequentemente confundidos:
+Frequentemente confundidos.
 
-| Conceito      | Definição                                           | Quem define          |
-|---------------|-----------------------------------------------------|----------------------|
-| **Severidade** | O quanto o bug impacta o sistema funcionalmente    | QA / Time técnico    |
-| **Prioridade** | A urgência de correção do bug                      | Produto / Negócio    |
+**Severidade:** o quanto o bug afeta o funcionamento. Definida pelo QA.
 
-**Exemplo prático:**
-- BUG de ortografia no rodapé: Severidade **Baixa** (não impacta função), Prioridade **Alta** (CEO viu e quer corrigir amanhã)
-- BUG de crash em feature raramente usada: Severidade **Crítica** (crash), Prioridade **Baixa** (feature não tem usuários)
+**Prioridade:** a urgência de correção. Definida pelo produto/negócio.
+
+Exemplo prático:
+- Erro de ortografia no rodapé: severidade baixa, prioridade alta (CEO viu e quer corrigir hoje)
+- Crash em funcionalidade raramente usada: severidade crítica, prioridade baixa (zero usuários afetados)
 
 ---
 
 ## Teste Exploratório
 
-Teste não roteirizado onde o testador explora o sistema livremente, usando conhecimento, experiência e criatividade para encontrar bugs que scripts automatizados não encontrariam.
+Sessão de teste sem roteiro fixo — o testador explora o produto com base em experiência e intuição.
 
-**Quando usar:** Especialmente valioso em áreas novas do sistema, quando há suspeita de bugs edge-case ou após grandes mudanças.
-
-**Neste projeto:** Os bugs BUG-001 a BUG-006 foram descobertos via exploração manual dos diferentes tipos de usuário do SauceDemo — antes de ser automatizados como testes.
+Os seis bugs deste projeto foram descobertos em exploração: logar com os diferentes tipos de usuário do SauceDemo e observar o que quebra.
 
 ---
 
 ## Teste de Regressão
 
-Verificação de que uma mudança no código não quebrou funcionalidades que estavam funcionando antes.
+Verificação de que uma mudança no código não quebrou algo que funcionava.
 
-**Importância:** A cada deploy, qualquer linha de código pode introduzir uma regressão em partes aparentemente não relacionadas do sistema.
-
-**Neste projeto:** Toda a suite de testes serve como suite de regressão — ao fazer um push, os workflows executam automaticamente e detectam regressões.
+Toda a suite de testes deste projeto serve como regressão: a cada deploy, os workflows executam e detectam problemas novos.
 
 ---
 
 ## Teste Smoke
 
-Conjunto mínimo de testes que verificam as funcionalidades mais críticas do sistema em uma execução rápida. O nome vem do teste de hardware: "ligar e ver se sai fumaça".
+Conjunto mínimo de testes para confirmar que o produto está de pé.
 
-**Critério:** Se o smoke falhar, não há justificativa para continuar com os demais testes.
-
-**Exemplos neste projeto** (`tests/smoke/`):
-- Login funciona?
-- Lista de produtos carrega?
-- Adicionar ao carrinho funciona?
-- Checkout completo funciona?
-
-Se qualquer um desses falhar → o sistema está quebrado de forma fundamental.
+Se o smoke falha, não há motivo para continuar — o sistema está quebrado de forma fundamental. No SauceDemo: o login funciona? Os produtos carregam? O checkout completa?

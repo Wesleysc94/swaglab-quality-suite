@@ -4,77 +4,56 @@ SWAGLAB QUALITY SUITE — RESUMO DO PROJETO
 
 OBJETIVO
 --------
-Portfolio de Quality Assurance demonstrando habilidades práticas em
-testes automatizados E2E, testes de API REST, CI/CD e documentação
-de qualidade, usando dois produtos públicos como alvo de testes.
+Segundo projeto de portfolio de QA. Automação E2E no SauceDemo
+(e-commerce com bugs intencionais) e testes de API no Reqres.in
+(API REST pública).
 
 
-APLICAÇÕES TESTADAS
--------------------
-1. SauceDemo (https://www.saucedemo.com/)
-   E-commerce com bugs intencionais para estudo de QA.
-
-2. Reqres.in (https://reqres.in/)
-   API REST pública para operações de CRUD e autenticação.
-
-
-NÚMEROS DO PROJETO
-------------------
-Testes E2E (Playwright/TypeScript):  19 testes em 8 arquivos
-Testes de API (pytest/Python):        14 testes em 3 arquivos
-Total de testes automatizados:        33 testes
-Bug reports documentados:             6 relatórios (BUG-001 a BUG-006)
-Page Objects criados:                 5 (Login, Inventory, Cart, Checkout, Complete)
-Documentação técnica:                 4 docs + README + Glossário (17 termos)
+NÚMEROS
+-------
+Testes E2E:           19 testes — Playwright + TypeScript
+Testes de API:        14 testes — pytest + httpx
+Bug reports:          6 (BUG-001 a BUG-006)
+Page Objects:         5 (Login, Inventory, Cart, Checkout, Complete)
+CI/CD:                2 workflows no GitHub Actions
 
 
-STACK TÉCNICA
--------------
-E2E:  Playwright + TypeScript 5 + strict mode
-API:  pytest 8 + httpx + pytest-html
-CI:   GitHub Actions (2 workflows independentes)
-Padrão:  Page Object Model (POM)
+DESTAQUES
+---------
+- Testes de problem_user passam documentando bugs sem quebrar o CI
+- Page Object Model: seletores centralizados em classes separadas
+- Dados de teste em test-data.ts — sem strings hardcoded nos testes
+- Cada bug report tem passos de reprodução, evidência e análise de
+  impacto com recomendação Go/No Go
 
 
-DESTAQUES TÉCNICOS
-------------------
-1. TODOS os testes têm comentários em português explicando o "por quê"
-   — código pensado para estudo e legibilidade de equipe.
-
-2. Estratégia de documentação de bugs: testes de problem_user PASSAM
-   documentando comportamento defeituoso, sem poluir o CI com ruído.
-
-3. CI inteligente com filtro por paths: mudança em api/ não re-executa
-   testes E2E (reduz custo de minutos no Actions).
-
-4. Dados de teste centralizados em test-data.ts — zero magic strings
-   nos testes, TypeScript garante autocompletar e detecção de typos.
-
-5. Bug reports com análise de impacto Go/No Go — comunicação clara
-   para stakeholders sobre o que bloqueia ou não um lançamento.
-
-
-BUGS ENCONTRADOS
-----------------
-BUG-001: Imagens erradas para problem_user (Severidade Alta)
-BUG-002: Campo Last Name bloqueado no checkout (Severidade Crítica)
-BUG-003: Carrinho com falhas para error_user (Severidade Alta)
-BUG-004: Campos de checkout não persistem (Severidade Alta)
-BUG-005: Login com latência de ~5s (Severidade Média)
-BUG-006: Inconsistências visuais de layout (Severidade Média)
+BUGS ENCONTRADOS (SAUCEDEMO)
+-----------------------------
+BUG-001  Imagens erradas no inventário         Alta      problem_user
+BUG-002  Campo Last Name bloqueado             Crítica   problem_user
+BUG-003  Carrinho com falhas aleatórias        Alta      error_user
+BUG-004  Campos do checkout não persistem      Alta      error_user
+BUG-005  Login com latência de ~5s             Média     performance_user
+BUG-006  Layout com inconsistências visuais    Média     visual_user
 
 
 COMO EXECUTAR
 -------------
-E2E:  cd e2e && npm install && npx playwright install chromium && npm test
-API:  cd api && pip install -r requirements.txt && pytest -v
+E2E:   cd e2e && npm install && npx playwright install chromium && npm test
+API:   cd api && pip install -r requirements.txt && pytest -v
+
+
+LEIA TAMBÉM
+-----------
+docs/guia-de-revisao.md   — Trilha para avaliadores (~20 min)
+docs/estrategia.md        — Por que Playwright, POM e pytest
+docs/glossario-qa.md      — 17 termos com exemplos práticos
 
 
 AUTOR
 -----
-Wesley Carvalho
-Analista de QA em formação — portfolio de Quality Assurance
-GitHub: github.com/wesleyjcarvalho
-LinkedIn: linkedin.com/in/wesleyjcarvalho
+Wesley Carvalho — Analista de QA
+LinkedIn: linkedin.com/in/wesley-carvalho94
+Portfolio: wxdigitalstudio.com.br
 
 ====================================================================

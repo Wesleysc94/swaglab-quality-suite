@@ -1,66 +1,61 @@
-# BUG-003 — Falhas ao adicionar e remover itens do carrinho para o error_user
+# BUG-003 — Botão "Add to cart" não responde consistentemente
 
-## Identificação
-
-- **Bug ID:** BUG-003
-- **Título:** Botões "Add to cart" e "Remove" não respondem consistentemente para o error_user
+- **ID:** BUG-003
 - **Data:** 2026-04-15
 - **Reportado por:** Wesley Carvalho
 - **Severidade:** Alta
 - **Prioridade:** Alta
 
-## Contexto
+---
 
-- **Produto:** SauceDemo (https://www.saucedemo.com/)
-- **Navegador:** Chromium (via Playwright)
-- **Usuário afetado:** `error_user`
-- **Página afetada:** `/inventory.html` (lista de produtos)
+## Produto e contexto
+
+- **Aplicação:** SauceDemo — https://www.saucedemo.com/
+- **Página:** `/inventory.html` — lista de produtos
+- **Usuário:** `error_user`
+- **Navegador:** Chromium
+
+---
 
 ## Pré-condições
 
-- Estar logado com `error_user` (username: `error_user`, password: `secret_sauce`)
-- Estar na página `/inventory.html`
+- Logado com `error_user` / `secret_sauce`
 
-## Passos para Reproduzir
+---
 
-1. Acessar https://www.saucedemo.com/ e fazer login com `error_user`
-2. Tentar clicar em **"Add to cart"** em qualquer produto (ex: "Sauce Labs Backpack")
-3. Observar o badge do carrinho no canto superior direito
-4. Tentar clicar em **"Add to cart"** em um segundo produto
+## Passos para reproduzir
 
-## Resultado Atual
+1. Faça login com `error_user` / `secret_sauce`
+2. Clique em **Add to cart** em qualquer produto
+3. Observe o badge do carrinho no canto superior direito
 
-O comportamento é inconsistente e imprevisível:
+---
 
-- **Cenário A (mais comum):** O badge do carrinho não aparece após clicar em "Add to cart" — o produto não foi adicionado
-- **Cenário B:** O botão troca para "Remove" visualmente, mas o badge não incrementa corretamente
-- **Cenário C:** Alguns produtos são adicionados corretamente, outros não respondem ao clique
-- A inconsistência varia entre execuções — o que funciona em uma tentativa pode falhar na próxima
+## Resultado atual
 
-## Resultado Esperado
+O comportamento é imprevisível:
 
-- Clicar em "Add to cart" deve sempre adicionar o produto ao carrinho
-- O badge deve incrementar imediatamente (de vazio para "1", de "1" para "2", etc.)
-- O botão deve alternar para "Remove" após a adição
-- O comportamento deve ser 100% consistente e reproduzível
+- Em alguns produtos, o botão não responde e o badge não aparece
+- Em outros, o botão troca para "Remove" visualmente, mas o badge não incrementa
+- O que funciona numa tentativa pode falhar na próxima
+
+---
+
+## Resultado esperado
+
+Clicar em "Add to cart" sempre adiciona o produto. O badge incrementa imediatamente.
+
+---
 
 ## Evidência
 
-- **Screenshot:** `manual/evidence/screenshots/BUG-003.png`
-- **Teste automatizado:** `e2e/tests/problem-users/error-user.spec.ts` — teste "[BUG-003]"
-- **Log do teste:**
-  ```
-  [BUG-003] Confirmado: badge não apareceu após adicionar produto ao carrinho
-  ```
+- Screenshot: `manual/evidence/screenshots/BUG-003.png`
+- Teste automatizado: `e2e/tests/problem-users/error-user.spec.ts` → teste `[BUG-003]`
 
-## Análise Técnica
-
-O `error_user` parece ter um perfil de configuração que injeta falhas aleatórias nos handlers de clique dos botões do carrinho. O erro não é de UI (os elementos existem), mas de processamento da ação — possivelmente um script JavaScript que deliberadamente ignora ou cancela o evento de clique para alguns produtos.
+---
 
 ## Impacto
 
-**No usuário final:** Experiência frustrante — o usuário clica várias vezes tentando adicionar produtos sem resultado. Sensação de sistema quebrado. Alta probabilidade de abandono da sessão.
+O usuário não consegue adicionar produtos de forma confiável. A taxa de abandono é alta — produto que não entra no carrinho não é comprado.
 
-**No negócio:** Redução direta na taxa de conversão. Produtos que não podem ser adicionados ao carrinho não podem ser comprados — perda de receita direta.
-
-**Critério de Go/No Go:** Bug **bloqueador** para qualquer perfil de usuário afetado. Severidade Alta porque impede ações essenciais do e-commerce.
+**Recomendação:** No Go para perfis com este comportamento.

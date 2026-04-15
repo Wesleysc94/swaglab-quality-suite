@@ -1,0 +1,57 @@
+====================================================================
+SWAGLAB QUALITY SUITE — LEIA PRIMEIRO
+====================================================================
+
+Este é o segundo projeto do meu portfolio de QA.
+
+Se é a primeira vez que você abre este repositório, comece aqui.
+
+
+O QUE VOCÊ VAI ENCONTRAR
+-------------------------
+
+  /e2e             Automação web com Playwright e TypeScript.
+                   Testa o SauceDemo — um e-commerce feito pra ter bugs.
+
+  /api             Automação de API com pytest e httpx.
+                   Testa o Reqres.in — API REST pública de CRUD.
+
+  /manual          Bug reports dos defeitos encontrados no SauceDemo.
+                   6 relatórios com reprodução, evidência e impacto.
+
+  /docs            Documentação do projeto.
+                   Estratégia, escopo, glossário e guia de revisão.
+
+
+ORDEM DE LEITURA RECOMENDADA
+-----------------------------
+
+  1. README.md                     Visão geral em ~5 minutos
+  2. RESUMO-DO-PROJETO.txt         Números e destaques em ~2 minutos
+  3. docs/guia-de-revisao.md       Trilha completa (~20 minutos)
+
+
+COMO RODAR OS TESTES
+--------------------
+
+  E2E (Playwright):
+    cd e2e
+    npm install
+    npx playwright install chromium
+    npm test
+
+  API (pytest):
+    cd api
+    pip install -r requirements.txt
+    pytest -v
+
+
+PRIMEIRO PORTFOLIO
+------------------
+Se quiser ver o projeto anterior (QA manual + API + E2E num único
+produto), acesse:
+
+  github.com/Wesleysc94/toolshop-quality-portfolio
+
+
+====================================================================

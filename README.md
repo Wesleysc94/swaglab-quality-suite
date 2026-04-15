@@ -1,254 +1,170 @@
-# swaglab-quality-suite
+# 🧪 swaglab-quality-suite
 
-[![E2E Tests](https://img.shields.io/github/actions/workflow/status/wesleyjcarvalho/swaglab-quality-suite/e2e-tests.yml?branch=main&label=E2E%20Tests&logo=playwright&logoColor=white)](https://github.com/wesleyjcarvalho/swaglab-quality-suite/actions/workflows/e2e-tests.yml)
-[![API Tests](https://img.shields.io/github/actions/workflow/status/wesleyjcarvalho/swaglab-quality-suite/api-tests.yml?branch=main&label=API%20Tests&logo=pytest&logoColor=white)](https://github.com/wesleyjcarvalho/swaglab-quality-suite/actions/workflows/api-tests.yml)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![Playwright](https://img.shields.io/badge/Playwright-latest-45ba4b?logo=playwright&logoColor=white)](https://playwright.dev/)
-[![pytest](https://img.shields.io/badge/pytest-8.x-0A9EDC?logo=pytest&logoColor=white)](https://pytest.org/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+> Segundo projeto do portfolio de QA — automação E2E, testes de API e documentação de bugs em dois produtos públicos diferentes.
 
-> Portfolio de Quality Assurance com automação E2E (Playwright), testes de API (pytest), CI/CD com GitHub Actions e documentação de bugs. Projeto construído para demonstrar habilidades práticas de Analista de QA.
+[![E2E Tests](https://img.shields.io/badge/E2E%20Tests-19%20testes-brightgreen)](e2e/tests/)
+[![API Tests](https://img.shields.io/badge/API%20Tests-14%20testes-brightgreen)](api/tests/)
+[![Bugs documentados](https://img.shields.io/badge/Bugs-6%20relatórios-red)](manual/bug-reports/)
+[![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=github-actions&logoColor=white)](.github/workflows/)
 
----
-
-## Sobre o Projeto
-
-O **swaglab-quality-suite** é um projeto de portfolio que aplica boas práticas de QA em dois produtos públicos:
-
-| Produto | Tipo | Ferramenta | Cenários |
-|---------|------|------------|----------|
-| [SauceDemo](https://www.saucedemo.com/) | E-commerce web com bugs intencionais | Playwright + TypeScript | 19 testes |
-| [Reqres.in](https://reqres.in/) | API REST (CRUD + Autenticação) | pytest + httpx | 14 testes |
-
-**Total:** 33 testes automatizados · 6 bug reports · CI/CD com GitHub Actions
+📦 **Parte do portfolio:** [toolshop-quality-portfolio](https://github.com/Wesleysc94/toolshop-quality-portfolio)
 
 ---
 
-## Tecnologias
+## Por que este projeto existe
 
-<div align="left">
+No [primeiro portfolio](https://github.com/Wesleysc94/toolshop-quality-portfolio) testei um único produto em três camadas — manual, API e E2E. Aqui mudei a abordagem: **dois produtos diferentes, cada um com seu conjunto de desafios.**
 
-![Playwright](https://img.shields.io/badge/Playwright-45ba4b?style=for-the-badge&logo=playwright&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![pytest](https://img.shields.io/badge/pytest-0A9EDC?style=for-the-badge&logo=pytest&logoColor=white)
-![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)
+O [SauceDemo](https://www.saucedemo.com/) é um e-commerce construído com bugs intencionais — o site foi feito pra quebrar. O [Reqres.in](https://reqres.in/) é uma API REST pública para praticar operações de CRUD e autenticação.
 
-</div>
+A combinação foi escolhida porque permite praticar uma habilidade que o primeiro portfolio não cobria: **como testar e documentar bugs que você sabe que existem, sem deixar o CI quebrado.**
 
 ---
 
-## Cobertura de Testes
+## O que foi feito
 
-### E2E — SauceDemo (Playwright + TypeScript)
-
-#### Smoke Tests — caminho feliz (`tests/smoke/`)
-
-| Cenário | Resultado |
-|---------|-----------|
-| Login com standard_user → redireciona para /inventory.html | ✅ Passa |
-| Logout → retorna à página de login | ✅ Passa |
-| Inventário exibe 6 produtos | ✅ Passa |
-| Ordenação por preço crescente (Onesie primeiro) | ✅ Passa |
-| Detalhe de produto exibe nome e preço | ✅ Passa |
-| Adicionar produto → badge mostra "1" | ✅ Passa |
-| Remover produto → badge desaparece | ✅ Passa |
-| Checkout completo → mensagem de sucesso | ✅ Passa |
-| Revisão do pedido exibe produto e preço corretos | ✅ Passa |
-| "Back Home" após checkout retorna ao inventário | ✅ Passa |
-
-#### Testes Negativos — validação de erros (`tests/negative/`)
-
-| Cenário | Resultado |
-|---------|-----------|
-| Login com credenciais inválidas → mensagem de erro | ✅ Passa |
-| Login com locked_out_user → mensagem de bloqueio | ✅ Passa |
-| Acesso direto a /inventory.html sem login → redireciona | ✅ Passa |
-| Checkout sem campos preenchidos → erro de validação | ✅ Passa |
-| Checkout com apenas First Name → erro no campo seguinte | ✅ Passa |
-
-#### Problem Users — bugs documentados (`tests/problem-users/`)
-
-| Usuário | Comportamento testado | Bug | Resultado |
-|---------|----------------------|-----|-----------|
-| problem_user | Login funciona | — | ✅ Passa |
-| problem_user | Imagens incorretas nos produtos | [BUG-001](#-bug-reports) | ✅ Documentado |
-| problem_user | Last Name não aceita digitação | [BUG-002](#-bug-reports) | ✅ Documentado |
-| error_user | Login funciona | — | ✅ Passa |
-| error_user | Carrinho com comportamento inconsistente | [BUG-003](#-bug-reports) | ✅ Documentado |
-| error_user | Campos de checkout não persistem | [BUG-004](#-bug-reports) | ✅ Documentado |
-| performance_glitch_user | Login com latência de ~5 segundos | [BUG-005](#-bug-reports) | ✅ Documentado |
-| visual_user | Inconsistências visuais no layout | [BUG-006](#-bug-reports) | ✅ Documentado |
-
----
-
-### API — Reqres.in (pytest + httpx)
-
-#### CRUD de Usuários (`tests/test_users.py`) · `@pytest.mark.crud`
-
-| Endpoint | Cenário | Resultado |
-|----------|---------|-----------|
-| `GET /api/users` | Status 200 · campo `data` é lista | ✅ Passa |
-| `GET /api/users?page=2` | Paginação correta · campo `total_pages` | ✅ Passa |
-| `GET /api/users/2` | Campos `id`, `email`, `first_name` presentes | ✅ Passa |
-| `POST /api/users` | Status 201 · campos `name` e `job` retornados | ✅ Passa |
-| `PUT /api/users/2` | Status 200 · campo `updatedAt` presente | ✅ Passa |
-| `DELETE /api/users/2` | Status 204 · body vazio | ✅ Passa |
-
-#### Autenticação (`tests/test_auth.py`) · `@pytest.mark.auth`
-
-| Endpoint | Cenário | Resultado |
-|----------|---------|-----------|
-| `POST /api/register` | Com senha → status 200 · token presente | ✅ Passa |
-| `POST /api/register` | Sem senha → status 400 · campo `error` | ✅ Passa |
-| `POST /api/login` | Com senha → status 200 · token presente | ✅ Passa |
-| `POST /api/login` | Sem senha → status 400 · campo `error` | ✅ Passa |
-
-#### Cenários Negativos (`tests/test_negative.py`) · `@pytest.mark.negative`
-
-| Endpoint | Cenário | Resultado |
-|----------|---------|-----------|
-| `GET /api/users/23` | Usuário inexistente → status 404 · body `{}` | ✅ Passa |
-| `GET /api/unknown/23` | Recurso inexistente → status 404 | ✅ Passa |
-| `GET /api/users` | Content-Type → `application/json` | ✅ Passa |
-| `GET /api/users?delay=3` | Responde dentro do timeout (30s) | ✅ Passa |
+```
+┌─────────────────────────────────────────────────────────┐
+│                   PRODUTOS SOB TESTE                    │
+├──────────────────────────┬──────────────────────────────┤
+│      SAUCEDEMO           │         REQRES.IN            │
+│   (automação web E2E)    │      (automação de API)      │
+│                          │                              │
+│  • Login / Logout        │  • CRUD de usuários          │
+│  • Inventário            │  • Autenticação              │
+│  • Carrinho              │  • Cenários negativos        │
+│  • Checkout completo     │                              │
+│  • Erros de formulário   │                              │
+│  • 4 tipos de usuários   │                              │
+│    com bugs              │                              │
+│                          │                              │
+│  19 testes ✅            │  14 testes ✅               │
+│  6 bug reports 🐛        │  100% pass ✅               │
+└──────────────────────────┴──────────────────────────────┘
+```
 
 ---
 
 ## 🐛 Bug Reports
 
-Bugs descobertos e documentados no SauceDemo. Cada relatório inclui passos de reprodução, análise de impacto e critério **Go/No Go**.
+Bugs encontrados no SauceDemo ao testar com usuários especiais. Cada relatório tem passos de reprodução, análise de impacto e recomendação Go/No Go.
 
-| ID | Título | Severidade | Usuário | Status |
-|----|--------|:----------:|---------|:------:|
-| [BUG-001](manual/bug-reports/BUG-001-problem-user-wrong-images.md) | Todos os produtos exibem a mesma imagem incorreta | 🟠 Alta | `problem_user` | Aberto |
-| [BUG-002](manual/bug-reports/BUG-002-problem-user-lastname-locked.md) | Campo Last Name não aceita digitação no checkout | 🔴 Crítica | `problem_user` | Aberto |
-| [BUG-003](manual/bug-reports/BUG-003-error-user-cart-failures.md) | Falhas ao adicionar/remover itens do carrinho | 🟠 Alta | `error_user` | Aberto |
-| [BUG-004](manual/bug-reports/BUG-004-error-user-checkout-fields.md) | Campos do checkout não persistem os valores | 🟠 Alta | `error_user` | Aberto |
-| [BUG-005](manual/bug-reports/BUG-005-performance-user-login-delay.md) | Login apresenta latência de ~5 segundos | 🟡 Média | `performance_glitch_user` | Aberto |
-| [BUG-006](manual/bug-reports/BUG-006-visual-user-layout-issues.md) | Inconsistências visuais no layout do inventário | 🟡 Média | `visual_user` | Aberto |
+| ID | Bug | Severidade | Usuário |
+|----|-----|:----------:|---------|
+| [BUG-001](manual/bug-reports/BUG-001-problem-user-wrong-images.md) | Todos os produtos mostram a mesma imagem errada | 🟠 Alta | `problem_user` |
+| [BUG-002](manual/bug-reports/BUG-002-problem-user-lastname-locked.md) | Campo sobrenome não aceita digitação no checkout | 🔴 Crítica | `problem_user` |
+| [BUG-003](manual/bug-reports/BUG-003-error-user-cart-failures.md) | Botão "Adicionar ao carrinho" não responde | 🟠 Alta | `error_user` |
+| [BUG-004](manual/bug-reports/BUG-004-error-user-checkout-fields.md) | Formulário de checkout perde os valores digitados | 🟠 Alta | `error_user` |
+| [BUG-005](manual/bug-reports/BUG-005-performance-user-login-delay.md) | Login demora ~5 segundos para responder | 🟡 Média | `performance_glitch_user` |
+| [BUG-006](manual/bug-reports/BUG-006-visual-user-layout-issues.md) | Layout do inventário com elementos fora do lugar | 🟡 Média | `visual_user` |
 
----
-
-## Como Executar
-
-### Pré-requisitos
-
-- [Node.js 18+](https://nodejs.org/)
-- [Python 3.12+](https://www.python.org/)
-- [Git](https://git-scm.com/)
-
-### Testes E2E (Playwright)
-
-```bash
-# Instalar dependências
-cd e2e
-npm install
-npx playwright install chromium
-
-# Executar todas as suites
-npm test
-
-# Executar por categoria
-npm run test:smoke           # Testes do caminho feliz
-npm run test:negative        # Testes de erro e validação
-npm run test:problem-users   # Testes de usuários com bugs
-
-# Abrir relatório HTML
-npm run report
-```
-
-### Testes de API (pytest)
-
-```bash
-# Instalar dependências
-cd api
-pip install -r requirements.txt
-
-# Executar todos os testes
-pytest -v
-
-# Executar por categoria (marcadores)
-pytest -m crud       # Operações CRUD
-pytest -m auth       # Autenticação
-pytest -m negative   # Cenários negativos
-
-# Gerar relatório HTML
-pytest -v --html=report.html --self-contained-html
-```
+> **Nota sobre os testes de bugs:** Os testes dos usuários com problema foram escritos para **passar**, documentando o comportamento defeituoso em vez de falhar o CI. Isso é intencional — bug conhecido no CI só gera ruído.
 
 ---
 
-## Estrutura do Projeto
+## Estrutura do projeto
 
 ```
 swaglab-quality-suite/
-├── .github/
-│   └── workflows/
-│       ├── e2e-tests.yml      # CI: Playwright no Ubuntu
-│       └── api-tests.yml      # CI: pytest no Ubuntu
-├── e2e/                       # Testes E2E — Playwright + TypeScript
-│   ├── pages/                 # Page Objects (Login, Inventory, Cart, Checkout, Complete)
-│   ├── support/               # Dados de teste centralizados (test-data.ts)
-│   ├── tests/
-│   │   ├── smoke/             # 10 testes — caminho feliz
-│   │   ├── negative/          # 5 testes — erros e validações
-│   │   └── problem-users/     # 8 testes — bugs conhecidos documentados
-│   └── playwright.config.ts
-├── api/                       # Testes de API — pytest + httpx
-│   ├── tests/
-│   │   ├── test_users.py      # CRUD completo (6 testes)
-│   │   ├── test_auth.py       # Registro e login (4 testes)
-│   │   └── test_negative.py   # Cenários negativos (4 testes)
-│   └── conftest.py            # Fixtures compartilhadas
+├── e2e/                        ← Automação web — Playwright + TypeScript
+│   ├── pages/                  ← Page Objects (LoginPage, CartPage, etc.)
+│   ├── support/                ← Dados de teste centralizados
+│   └── tests/
+│       ├── smoke/              ← Fluxo feliz (login, carrinho, checkout)
+│       ├── negative/           ← Erros e validações
+│       └── problem-users/      ← Testes documentando bugs conhecidos
+│
+├── api/                        ← Automação de API — pytest + httpx
+│   └── tests/
+│       ├── test_users.py       ← CRUD de usuários
+│       ├── test_auth.py        ← Registro e login
+│       └── test_negative.py    ← Erros esperados
+│
 ├── manual/
-│   └── bug-reports/           # 6 relatórios de bugs com análise de impacto
-└── docs/
-    ├── escopo.md              # O que está dentro/fora do escopo
-    ├── estrategia.md          # Decisões técnicas fundamentadas
-    ├── glossario-qa.md        # 17 termos de QA explicados
-    └── guia-de-revisao.md     # Trilha de leitura para avaliadores (~30 min)
+│   └── bug-reports/            ← 6 relatórios de bugs do SauceDemo
+│
+├── docs/
+│   ├── escopo.md               ← O que entra e o que fica de fora
+│   ├── estrategia.md           ← Por que cada ferramenta foi escolhida
+│   ├── glossario-qa.md         ← 17 termos de QA com exemplos práticos
+│   └── guia-de-revisao.md      ← Trilha de leitura (~30 min)
+│
+└── .github/workflows/          ← CI/CD automatizado
 ```
 
 ---
 
-## O que este Projeto Demonstra
+## Como executar
 
-| Habilidade | Como aparece no projeto |
-|-----------|------------------------|
-| **Automação E2E** | 19 testes Playwright cobrindo smoke, negativos e casos de bug |
-| **Testes de API REST** | 14 testes pytest com CRUD completo, autenticação e erros |
-| **Page Object Model** | 5 Page Objects TypeScript com seletores encapsulados |
-| **CI/CD** | 2 workflows GitHub Actions com cache e filtro por paths |
-| **Documentação de Bugs** | 6 bug reports com severidade, evidência e análise Go/No Go |
-| **Estratégia de QA** | Decisões fundamentadas em `docs/estrategia.md` |
-| **TypeScript strict** | `tsconfig.json` com `strict: true`, tipagem forte |
-| **pytest marcadores** | `@pytest.mark.crud/auth/negative` para execução seletiva |
-| **Dados centralizados** | `test-data.ts` como fonte única de verdade (zero magic strings) |
-| **Documentação didática** | 100% comentado em português com explicações do "por quê" |
+### Pré-requisitos
+
+- Node.js 18+
+- Python 3.12+
+
+### Automação web (Playwright)
+
+```bash
+cd e2e
+npm install
+npx playwright install chromium
+npm test                        # todos os testes
+npm run test:smoke              # só o fluxo feliz
+npm run test:negative           # erros e validações
+npm run test:problem-users      # testes de bugs conhecidos
+npm run report                  # abre o relatório HTML
+```
+
+### Automação de API (pytest)
+
+```bash
+cd api
+pip install -r requirements.txt
+pytest -v                       # todos os testes
+pytest -m crud                  # só operações CRUD
+pytest -m auth                  # só autenticação
+pytest -m negative              # só cenários de erro
+```
 
 ---
 
-## Documentação Adicional
+## Por que isso importa
 
-- [Escopo do projeto](docs/escopo.md) — o que está dentro e fora do escopo, com justificativas
-- [Estratégia de testes](docs/estrategia.md) — por que Playwright, por que POM, por que monorepo
-- [Glossário de QA](docs/glossario-qa.md) — 17 termos explicados com exemplos práticos
-- [Guia de revisão](docs/guia-de-revisao.md) — trilha de leitura para avaliadores (~30 min)
+Este projeto cobre três coisas que o portfolio anterior não tinha:
+
+1. **Testes em múltiplos produtos** — mostra capacidade de adaptar a abordagem para produtos com características diferentes.
+
+2. **Documentação de bugs conhecidos sem quebrar o CI** — o teste passa, registra o problema no console e no relatório. O bug fica rastreável sem gerar alarme falso.
+
+3. **Page Object Model** — todos os seletores ficam centralizados em classes separadas. Se o SauceDemo mudar o HTML, ajusta em um lugar e todos os testes continuam funcionando.
+
+---
+
+## Como revisar
+
+| Passo | O que ver | Tempo |
+|-------|-----------|-------|
+| 1 | [RESUMO-DO-PROJETO.txt](RESUMO-DO-PROJETO.txt) | 2 min |
+| 2 | [docs/guia-de-revisao.md](docs/guia-de-revisao.md) | 3 min |
+| 3 | [Bug reports](manual/bug-reports/) — BUG-001 e BUG-002 | 5 min |
+| 4 | [e2e/pages/](e2e/pages/) — como o POM foi implementado | 5 min |
+| 5 | [api/tests/](api/tests/) — estrutura dos testes de API | 5 min |
+
+> ⏱️ **Revisão completa em ~20 minutos.**
+
+---
+
+## Produtos testados
+
+| Produto | Tipo | URL |
+|---------|------|-----|
+| SauceDemo | E-commerce web com bugs intencionais | https://www.saucedemo.com/ |
+| Reqres.in | API REST pública (CRUD + Auth) | https://reqres.in/ |
 
 ---
 
 ## Contato
 
-**Wesley Carvalho**
-Analista de QA em formação | Automação de Testes · Playwright · pytest
+**Wesley Carvalho** — Analista de QA
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/wesleyjcarvalho)
-[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/wesleyjcarvalho)
-
----
-
-<p align="center">
-  Feito com foco em qualidade · Portfolio QA 2026
-</p>
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Wesley%20Carvalho-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/wesley-carvalho94/)
+[![Portfolio](https://img.shields.io/badge/WX%20Digital%20Studio-111?style=flat&logo=google-chrome&logoColor=white)](https://www.wxdigitalstudio.com.br)
