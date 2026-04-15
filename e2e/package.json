@@ -1,0 +1,16 @@
+{
+  "name": "swaglab-e2e",
+  "version": "1.0.0",
+  "scripts": {
+    "test:smoke": "npx playwright test tests/smoke/",
+    "test:negative": "npx playwright test tests/negative/",
+    "test:problem-users": "npx playwright test tests/problem-users/",
+    "test:all": "npx playwright test",
+    "test:headed": "npx playwright test --headed",
+    "report": "npx playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "latest",
+    "typescript": "^5.0.0"
+  }
+}

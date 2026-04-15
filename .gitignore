@@ -1,0 +1,64 @@
+# ==========================================
+# Claude Code (configurações locais do IDE — não versionar)
+# ==========================================
+.claude/settings.local.json
+PROMPT-CLAUDE-CODE.md
+PLANEJAMENTO-SWAGLAB.md
+
+# ==========================================
+# Node.js / Playwright
+# ==========================================
+node_modules/
+dist/
+build/
+
+# Relatórios e artefatos gerados pelo Playwright
+e2e/playwright-report/
+e2e/test-results/
+e2e/.playwright/
+
+# ==========================================
+# Python / pytest
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+.venv/
+venv/
+env/
+.env
+
+# Relatório HTML do pytest
+api/report.html
+
+# ==========================================
+# IDEs e editores
+# ==========================================
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ==========================================
+# Logs e temporários
+# ==========================================
+*.log
+*.tmp
+*.bak
+
+# ==========================================
+# Evidências de teste (screenshots/vídeos gerados)
+# A pasta manual/evidence/screenshots existe mas os arquivos
+# gerados automaticamente não devem ser versionados —
+# apenas evidências capturadas manualmente de bugs reais.
+# ==========================================
+manual/evidence/screenshots/*.png
+manual/evidence/screenshots/*.jpg
+manual/evidence/videos/
+
+# Mantém a estrutura de pastas no git sem os arquivos gerados
+!manual/evidence/.gitkeep

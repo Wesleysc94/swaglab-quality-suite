@@ -1,0 +1,56 @@
+name: API Tests
+
+# Gatilhos: executa quando há push ou PR no branch main
+# Filtra apenas mudanças na pasta api/ para evitar execuções desnecessárias
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'api/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'api/**'
+
+jobs:
+  test:
+    # Ubuntu para consistência com o ambiente de CI da maioria dos projetos
+    runs-on: ubuntu-latest
+
+    # Define o diretório de trabalho para todos os steps deste job
+    defaults:
+      run:
+        working-directory: ./api
+
+    steps:
+      # Faz checkout do código do repositório
+      - uses: actions/checkout@v4
+
+      # Configura o Python 3.12 — versão mais recente estável
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          # Cache do pip para acelerar instalações
+          cache: 'pip'
+          cache-dependency-path: api/requirements.txt
+
+      # Instala as dependências de teste (pytest, httpx, pytest-html)
+      - name: Instalar dependências Python
+        run: pip install -r requirements.txt
+
+      # Executa os testes com output verbose e traceback curto
+      # -v: exibe o nome de cada teste
+      # --tb=short: mostra traceback resumido nas falhas
+      # --html=report.html: gera relatório HTML dos resultados
+      - name: Executar testes de API
+        run: pytest -v --tb=short --html=report.html --self-contained-html
+
+      # Faz upload do relatório HTML mesmo quando os testes falham
+      - name: Upload do relatório pytest
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pytest-report
+          path: api/report.html
+          # Retém o relatório por 30 dias para análise
+          retention-days: 30

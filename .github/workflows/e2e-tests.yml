@@ -1,0 +1,60 @@
+name: E2E Tests
+
+# Gatilhos: executa quando há push ou PR no branch main
+# Filtra apenas mudanças na pasta e2e/ para evitar execuções desnecessárias
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'e2e/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'e2e/**'
+
+jobs:
+  test:
+    # Usa Ubuntu porque é mais rápido e barato que Windows/Mac no GitHub Actions
+    runs-on: ubuntu-latest
+
+    # Define o diretório de trabalho para todos os steps deste job
+    defaults:
+      run:
+        working-directory: ./e2e
+
+    steps:
+      # Faz checkout do código do repositório
+      - uses: actions/checkout@v4
+
+      # Configura o Node.js — versão 18 LTS para estabilidade
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          # Cache do npm para acelerar instalações subsequentes
+          cache: 'npm'
+          cache-dependency-path: e2e/package-lock.json
+
+      # Instala as dependências exatamente como definido no package-lock.json
+      # 'ci' (clean install) é mais rigoroso que 'install' — garante reprodutibilidade
+      - name: Instalar dependências
+        run: npm ci
+
+      # Instala apenas o Chromium e suas dependências do sistema
+      # --with-deps instala as libs de sistema necessárias no Ubuntu
+      - name: Instalar Playwright e Chromium
+        run: npx playwright install --with-deps chromium
+
+      # Executa todos os testes com output detalhado
+      - name: Executar testes E2E
+        run: npx playwright test
+
+      # Faz upload do relatório HTML mesmo quando os testes falham
+      # 'if: always()' garante que o relatório seja salvo independentemente do resultado
+      - name: Upload do relatório Playwright
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: e2e/playwright-report/
+          # Retém o relatório por 30 dias para análise
+          retention-days: 30
