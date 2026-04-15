@@ -1,150 +1,151 @@
 """
-Testes de autenticação para a API Reqres.in.
+Testes de criação e manipulação de comentários para a API JSONPlaceholder.
 
-Este módulo testa os endpoints de registro e login da API.
-Autenticação é uma funcionalidade crítica — um bug aqui pode expor
-dados de usuários ou bloquear o acesso legítimo ao sistema.
+Este módulo testa os endpoints de criação de posts e comentários da API.
+Criar e listar comentários é uma funcionalidade essencial — um bug aqui
+pode impedir usuários de comentar em posts ou listar discussões.
 
 Endpoints cobertos:
-- POST /api/register → cadastro de novo usuário (com e sem senha)
-- POST /api/login    → autenticação de usuário (com e sem senha)
+- POST /posts      → criar novo post (com título e corpo)
+- POST /comments   → criar novo comentário (com email e corpo)
+- GET /posts/{id}/comments → listar comentários de um post específico
 
-Os emails utilizados são os que o Reqres.in reconhece como válidos
-para operações de registro e login simulados.
+JSONPlaceholder é uma API fake para prototipagem. Não valida credenciais
+reais, mas simula o comportamento de uma API REST real com status codes corretos.
 """
 
 import pytest
 
 
-# Marcador para identificar estes testes como de autenticação
-# Permite rodar apenas este grupo com: pytest -m auth
-pytestmark = pytest.mark.auth
+# Marcador para identificar estes testes como de criação
+# Permite rodar apenas este grupo com: pytest -m creation
+pytestmark = pytest.mark.creation
 
 
-def test_register_with_valid_credentials_returns_token(client):
+def test_create_post_with_valid_data_returns_201(client):
     """
-    Registro com email e senha válidos deve retornar status 200 e um token.
+    Criar um novo post com dados válidos deve retornar status 201.
 
-    O token gerado no registro é usado para autenticar requisições futuras.
-    Sem o token, o usuário não conseguiria acessar recursos protegidos.
+    A criação de posts é fundamental — sem ela, usuários não poderiam
+    publicar conteúdo. O status 201 Created indica sucesso na criação de recurso.
     """
-    # Payload com credenciais válidas para o Reqres.in
-    # Este email é reconhecido pela API simulada como um usuário registrável
-    payload = {
-        "email": "eve.holt@reqres.in",
-        "password": "pistol",
+    # Payload com os dados do novo post a ser criado
+    novo_post = {
+        "title": "Automação de Testes no Swaglab",
+        "body": "Este post documenta a abordagem de automação com Playwright",
+        "userId": 1,
     }
 
-    # Envia POST para o endpoint de registro com as credenciais
-    response = client.post("/api/register", json=payload)
+    # Envia POST para criar o novo post
+    response = client.post("/posts", json=novo_post)
 
-    # Status 200 indica que o registro foi aceito com sucesso
+    # Status 201 Created indica que o recurso foi criado com sucesso
+    assert response.status_code == 201, \
+        f"Criação de post deve retornar 201, mas retornou {response.status_code}"
+
+    body = response.json()
+
+    # A API deve devolver os campos enviados na criação
+    assert "title" in body, "Resposta de criação deve conter o campo 'title'"
+    assert "body" in body, "Resposta de criação deve conter o campo 'body'"
+    assert "userId" in body, "Resposta de criação deve conter o campo 'userId'"
+
+    # Os valores retornados devem ser iguais aos enviados
+    assert body["title"] == novo_post["title"], \
+        f"Título retornado deve ser '{novo_post['title']}'"
+    assert body["body"] == novo_post["body"], \
+        f"Corpo retornado deve ser '{novo_post['body']}'"
+
+    # A API também deve retornar um ID gerado para o novo post
+    assert "id" in body, "Resposta de criação deve incluir o 'id' gerado"
+
+
+def test_create_post_without_body_still_returns_201(client):
+    """
+    Criar um post sem corpo (body vazio) ainda deve retornar 201.
+
+    Esta é uma validação de entrada — mesmo que o body seja vazio,
+    a API não deve rejeitar a criação, mas aceitar e retornar 201.
+    JSONPlaceholder não faz validações rígidas, apenas simula uma API real.
+    """
+    # Payload com body vazio propositalmente
+    novo_post = {
+        "title": "Post sem corpo",
+        "body": "",
+        "userId": 1,
+    }
+
+    # Envia POST para criar o post mesmo com body vazio
+    response = client.post("/posts", json=novo_post)
+
+    # JSONPlaceholder aceita e retorna 201 mesmo com body vazio
+    assert response.status_code == 201, \
+        f"Criação de post sem body deve retornar 201, mas retornou {response.status_code}"
+
+    body = response.json()
+
+    # Confirma que o ID foi gerado mesmo com body vazio
+    assert "id" in body, "Post sem body deve receber um ID gerado"
+    assert body["body"] == "", "Body vazio deve ser mantido vazio na resposta"
+
+
+def test_create_comment_on_post_returns_201(client):
+    """
+    Criar um comentário em um post deve retornar status 201.
+
+    Comentários são a base de discussão em redes sociais e blogs.
+    Este teste verifica que novos comentários podem ser criados corretamente.
+    """
+    # Dados do novo comentário a ser criado
+    novo_comentario = {
+        "postId": 1,
+        "name": "Wesley Silva",
+        "email": "wesley@example.com",
+        "body": "Excelente post sobre automação de testes!",
+    }
+
+    # Envia POST para criar o comentário
+    response = client.post("/comments", json=novo_comentario)
+
+    # Status 201 Created indica sucesso na criação
+    assert response.status_code == 201, \
+        f"Criação de comentário deve retornar 201, mas retornou {response.status_code}"
+
+    body = response.json()
+
+    # Verifica que todos os campos foram retornados corretamente
+    assert body["postId"] == novo_comentario["postId"], "postId deve ser retornado"
+    assert body["email"] == novo_comentario["email"], "email deve ser retornado"
+    assert body["body"] == novo_comentario["body"], "body do comentário deve ser retornado"
+
+    # A API deve ter gerado um ID para o comentário
+    assert "id" in body, "Comentário criado deve ter um ID gerado"
+
+
+def test_list_comments_for_specific_post_returns_array(client):
+    """
+    Listar comentários de um post específico deve retornar um array de comentários.
+
+    Ao acessar /posts/{id}/comments, a API deve retornar todos os comentários
+    daquele post. Este endpoint é fundamental para exibir discussões.
+    """
+    # Busca todos os comentários do post com ID 1
+    response = client.get("/posts/1/comments")
+
+    # Deve retornar 200 OK — o post existe e pode ter comentários
     assert response.status_code == 200, \
-        f"Registro válido deve retornar 200, mas retornou {response.status_code}"
+        f"Listagem de comentários deve retornar 200, mas retornou {response.status_code}"
 
-    body = response.json()
+    # A resposta deve ser uma lista de comentários
+    comentarios = response.json()
+    assert isinstance(comentarios, list), "Resposta deve ser uma array de comentários"
 
-    # O token deve estar presente na resposta — é o resultado do registro
-    assert "token" in body, \
-        "Registro bem-sucedido deve retornar um 'token' de autenticação"
+    # O post 1 sempre tem comentários no JSONPlaceholder
+    assert len(comentarios) > 0, "Post 1 deve ter pelo menos um comentário"
 
-    # O token não deve ser uma string vazia
-    assert body["token"], \
-        "Token retornado pelo registro não deve ser vazio"
-
-
-def test_register_without_password_returns_400_with_error(client):
-    """
-    Registro sem senha deve retornar status 400 e mensagem de erro.
-
-    Este é um teste de validação de entrada — a API deve rejeitar registros
-    incompletos com um código de erro e mensagem descritiva.
-
-    Um registro sem senha seria um problema de segurança grave, então
-    a API deve rejeitá-lo explicitamente.
-    """
-    # Enviamos apenas o email, sem o campo 'password' obrigatório
-    # Isso simula um cliente que enviou um payload incompleto
-    payload = {
-        "email": "eve.holt@reqres.in",
-        # campo 'password' propositalmente ausente para testar a validação
-    }
-
-    # Envia POST para /api/register sem o campo "password"
-    # Esperamos status 400 porque a API exige senha para registro
-    response = client.post("/api/register", json=payload)
-
-    assert response.status_code == 400, \
-        f"Registro sem senha deve retornar 400, mas retornou {response.status_code}"
-
-    body = response.json()
-
-    # A API deve retornar um campo 'error' explicando o problema
-    assert "error" in body, \
-        "Resposta de erro deve conter o campo 'error' com a descrição do problema"
-
-    # A mensagem de erro deve ser informativa (não vazia)
-    assert body["error"], \
-        "Mensagem de erro não deve ser vazia"
-
-
-def test_login_with_valid_credentials_returns_token(client):
-    """
-    Login com credenciais válidas deve retornar status 200 e um token.
-
-    O login é o fluxo mais crítico — é por onde os usuários acessam o sistema.
-    O token retornado será usado em todas as requisições autenticadas seguintes.
-    """
-    # Credenciais de um usuário que o Reqres.in reconhece para login
-    payload = {
-        "email": "eve.holt@reqres.in",
-        "password": "cityslicka",
-    }
-
-    # Envia POST para o endpoint de login com as credenciais
-    response = client.post("/api/login", json=payload)
-
-    # Status 200 indica autenticação bem-sucedida
-    assert response.status_code == 200, \
-        f"Login válido deve retornar 200, mas retornou {response.status_code}"
-
-    body = response.json()
-
-    # O token de autenticação deve estar presente na resposta
-    assert "token" in body, \
-        "Login bem-sucedido deve retornar um 'token' de autenticação"
-
-    # O token não deve ser vazio — ele será usado nas requisições seguintes
-    assert body["token"], \
-        "Token retornado pelo login não deve ser vazio"
-
-
-def test_login_without_password_returns_400_with_error(client):
-    """
-    Login sem senha deve retornar status 400 e mensagem de erro.
-
-    Um login sem senha não deve ser aceito — isso seria uma brecha de segurança.
-    A API deve validar a presença dos campos obrigatórios e rejeitar a requisição.
-    """
-    # Enviamos apenas o email, omitindo a senha propositalmente
-    payload = {
-        "email": "peter@klaven.com",
-        # campo 'password' omitido para testar rejeição da API
-    }
-
-    # Envia POST para /api/login sem o campo "password"
-    # Esperamos status 400 porque a API não deve autenticar sem senha
-    response = client.post("/api/login", json=payload)
-
-    assert response.status_code == 400, \
-        f"Login sem senha deve retornar 400, mas retornou {response.status_code}"
-
-    body = response.json()
-
-    # A resposta deve incluir um campo 'error' descrevendo o problema
-    assert "error" in body, \
-        "Resposta de erro no login deve conter o campo 'error'"
-
-    # A mensagem de erro não deve ser vazia
-    assert body["error"], \
-        "Mensagem de erro no login sem senha não deve ser vazia"
+    # Cada comentário deve ter os campos obrigatórios
+    for comentario in comentarios:
+        assert "id" in comentario, "Cada comentário deve ter um ID"
+        assert "postId" in comentario, "Cada comentário deve indicar seu post"
+        assert "body" in comentario, "Cada comentário deve ter um corpo"
+        assert "email" in comentario, "Cada comentário deve ter um email do autor"

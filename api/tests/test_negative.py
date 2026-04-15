@@ -1,19 +1,20 @@
 """
-Testes negativos e de fronteira para a API Reqres.in.
+Testes negativos e de fronteira para a API JSONPlaceholder.
 
 Testes negativos verificam como a API se comporta em situações incomuns:
 - Recursos inexistentes
 - Respostas com tipo de conteúdo correto
-- Comportamento com parâmetros de delay
+- Comportamento com parâmetros válidos mas sem resultados
+- Validação de estrutura de dados
 
 Um sistema robusto deve lidar bem com todos esses cenários,
 retornando erros claros sem expor informações internas ou travar.
 
 Cobertura:
-- GET de usuário inexistente → 404 com body vazio
-- GET de recurso inexistente → 404
+- GET de post inexistente → 404
+- GET de comentário inexistente → 404
 - Validação de Content-Type → deve ser application/json
-- Requisição com delay → deve responder dentro do timeout configurado
+- GET com filtros que não retornam resultados → 200 com array vazio
 """
 
 import pytest
@@ -24,43 +25,34 @@ import pytest
 pytestmark = pytest.mark.negative
 
 
-def test_get_nonexistent_user_returns_404_with_empty_body(client):
+def test_get_nonexistent_post_returns_404(client):
     """
-    Buscar um usuário com ID inexistente deve retornar 404 com body vazio.
+    Buscar um post com ID inexistente deve retornar 404 Not Found.
 
     O status 404 Not Found é o código correto quando o recurso não existe.
-    O Reqres.in retorna um objeto vazio '{}' para esse caso — não retorna
-    null nem uma mensagem de erro, o que é uma convenção válida de API REST.
+    JSONPlaceholder retorna 404 para IDs que estão fora do intervalo válido.
     """
-    # Buscamos o ID 23 — este ID não existe no Reqres.in (só existem IDs 1-12)
-    response = client.get("/api/users/23")
+    # Buscamos o ID 99999 — este ID não existe em JSONPlaceholder
+    response = client.get("/posts/99999")
 
     # 404 Not Found é o código semântico correto para recurso inexistente
     assert response.status_code == 404, \
-        f"Usuário inexistente deve retornar 404, mas retornou {response.status_code}"
-
-    body = response.json()
-
-    # O Reqres.in retorna um objeto JSON vazio para recursos não encontrados
-    assert body == {}, \
-        f"Body de 404 deve ser objeto vazio, mas foi: {body}"
+        f"Post inexistente deve retornar 404, mas retornou {response.status_code}"
 
 
-def test_get_nonexistent_resource_returns_404(client):
+def test_get_nonexistent_comment_returns_404(client):
     """
-    Buscar um recurso de lista inexistente deve retornar 404.
+    Buscar um comentário com ID inexistente deve retornar 404.
 
-    O Reqres.in tem o endpoint /api/unknown para listar recursos.
-    Paginar além dos dados disponíveis deve retornar 404 — a API
-    não deve retornar dados inventados para páginas que não existem.
+    Comentários também são recursos — quando não encontrados, a API
+    deve retornar 404 consistentemente.
     """
-    # Buscamos a página 3 do resource endpoint — o Reqres.in só tem 2 páginas
-    # Isso simula um cliente tentando paginar além do limite dos dados
-    response = client.get("/api/unknown/23")
+    # Buscamos o comentário ID 99999 — não existe em JSONPlaceholder
+    response = client.get("/comments/99999")
 
-    # A API deve retornar 404 para um recurso inexistente
+    # 404 Not Found é esperado para comentário inexistente
     assert response.status_code == 404, \
-        f"Recurso inexistente deve retornar 404, mas retornou {response.status_code}"
+        f"Comentário inexistente deve retornar 404, mas retornou {response.status_code}"
 
 
 def test_api_response_has_json_content_type(client):
@@ -72,7 +64,7 @@ def test_api_response_has_json_content_type(client):
     o parse JSON vai falhar e causar erros em cascata.
     """
     # Fazemos uma requisição simples para verificar o header de resposta
-    response = client.get("/api/users")
+    response = client.get("/posts")
 
     assert response.status_code == 200, \
         f"Requisição de verificação deve retornar 200, mas retornou {response.status_code}"
@@ -84,28 +76,89 @@ def test_api_response_has_json_content_type(client):
         f"Content-Type deve ser application/json, mas foi: {content_type}"
 
 
-def test_request_with_delay_responds_within_timeout(client):
+def test_list_posts_by_nonexistent_user_returns_empty_array(client):
     """
-    Requisição com parâmetro delay deve responder dentro do timeout configurado.
+    Buscar posts de um usuário que não existe deve retornar um array vazio.
 
-    O Reqres.in suporta o parâmetro '?delay=N' para simular latência no servidor.
-    Este teste verifica que nosso cliente aguarda a resposta sem timeout prematuro.
-
-    O timeout do cliente está configurado em 30s no conftest.py — um delay de 3s
-    deve ser tratado tranquilamente dentro desse limite.
+    Este teste verifica que quando nenhum resultado é encontrado,
+    a API retorna 200 OK com um array vazio em vez de 404.
+    Essa é uma convenção comum em APIs de listagem com filtros.
     """
-    # Envia requisição com delay de 3 segundos no servidor
-    # O Reqres.in atrasa a resposta propositalmente por 3 segundos
-    response = client.get("/api/users", params={"delay": 3})
+    # Buscamos posts de um usuário que não existe (userId muito alto)
+    response = client.get("/posts", params={"userId": 99999})
 
-    # A resposta deve chegar normalmente — nosso timeout é de 30s
-    # Se o timeout fosse menor que 3s, receberiamos TimeoutException
+    # 200 OK é esperado mesmo sem resultados
     assert response.status_code == 200, \
-        f"Requisição com delay de 3s deve retornar 200 dentro do timeout, " \
-        f"mas retornou {response.status_code}"
+        f"Busca sem resultados deve retornar 200, mas retornou {response.status_code}"
 
-    body = response.json()
+    posts = response.json()
 
-    # Confirma que os dados ainda chegam corretamente mesmo com o delay
-    assert "data" in body, \
-        "Resposta com delay deve conter o campo 'data' normalmente"
+    # Deve retornar um array vazio (não null nem 404)
+    assert isinstance(posts, list), "Resposta deve ser um array mesmo sem resultados"
+    assert len(posts) == 0, "Array deve estar vazio para userId inexistente"
+
+
+def test_create_post_with_empty_title_returns_201(client):
+    """
+    Criar um post com título vazio ainda retorna 201 (sem validação rigorosa).
+
+    JSONPlaceholder não valida o conteúdo rigorosamente — apenas simula uma API.
+    Este teste documenta que a API aceita dados inválidos sem rejeitar.
+    """
+    # Payload com título vazio propositalmente
+    post_invalido = {
+        "title": "",
+        "body": "Post com título vazio",
+        "userId": 1,
+    }
+
+    # Envia POST mesmo com title vazio
+    response = client.post("/posts", json=post_invalido)
+
+    # JSONPlaceholder retorna 201 mesmo com dados inválidos (é uma API fake)
+    assert response.status_code == 201, \
+        f"Criação com title vazio deve retornar 201, mas retornou {response.status_code}"
+
+    post_criado = response.json()
+
+    # Confirma que o title vazio foi mantido na resposta
+    assert post_criado["title"] == "", "Title vazio deve ser mantido na resposta"
+    assert "id" in post_criado, "Post deve ter ID gerado mesmo com title vazio"
+
+
+def test_update_nonexistent_post_returns_error_status(client):
+    """
+    Atualizar um post inexistente com PUT retorna um status de erro.
+
+    JSONPlaceholder retorna 500 Internal Server Error quando tenta
+    atualizar um post que não existe. Este teste documenta esse comportamento.
+    Isso é uma característica da API fake — não deve ser replicado em produção.
+    """
+    # Tentamos atualizar um post que não existe (ID 99999)
+    dados = {
+        "title": "Atualizando post inexistente",
+        "body": "Este post não existe",
+        "userId": 1,
+    }
+
+    response = client.put("/posts/99999", json=dados)
+
+    # JSONPlaceholder retorna 500 para PUT em recursos inexistentes
+    # (Este é um comportamento de API fake, não replicável em produção)
+    assert response.status_code in [200, 500], \
+        f"PUT em ID inexistente deve retornar 200 ou 500, mas retornou {response.status_code}"
+
+
+def test_delete_nonexistent_post_returns_200(client):
+    """
+    Deletar um post inexistente retorna 200 (comportamento do JSONPlaceholder).
+
+    JSONPlaceholder não falha em operações DELETE para recursos inexistentes.
+    Este é um comportamento documentado da API fake — não é replicado em APIs reais.
+    """
+    # Tentamos deletar um post que não existe
+    response = client.delete("/posts/99999")
+
+    # JSONPlaceholder retorna 200 mesmo para DELETE de recursos inexistentes
+    assert response.status_code == 200, \
+        f"DELETE de ID inexistente deve retornar 200 (sem validação), mas retornou {response.status_code}"

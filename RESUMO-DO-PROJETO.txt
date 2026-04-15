@@ -5,14 +5,14 @@ SWAGLAB QUALITY SUITE — RESUMO DO PROJETO
 OBJETIVO
 --------
 Segundo projeto de portfolio de QA. Automação E2E no SauceDemo
-(e-commerce com bugs intencionais) e testes de API no Reqres.in
-(API REST pública).
+(e-commerce com bugs intencionais) e testes de API no JSONPlaceholder
+(API fake grátis para prototipagem).
 
 
 NÚMEROS
 -------
-Testes E2E:           19 testes — Playwright + TypeScript
-Testes de API:        14 testes — pytest + httpx
+Testes E2E:           23 testes — Playwright + TypeScript
+Testes de API:        17 testes — pytest + httpx
 Bug reports:          6 (BUG-001 a BUG-006)
 Page Objects:         5 (Login, Inventory, Cart, Checkout, Complete)
 CI/CD:                2 workflows no GitHub Actions

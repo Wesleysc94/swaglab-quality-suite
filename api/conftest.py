@@ -7,7 +7,7 @@ basta declarar o nome da fixture como parâmetro da função de teste.
 
 Exemplo de uso:
     def test_algo(client):  # pytest injeta 'client' automaticamente
-        response = client.get("/api/users")
+        response = client.get("/posts")
 
 Este arquivo é carregado automaticamente pelo pytest antes de qualquer teste.
 """
@@ -15,15 +15,16 @@ Este arquivo é carregado automaticamente pelo pytest antes de qualquer teste.
 import httpx
 import pytest
 
-# URL base da API Reqres.in — centralizada aqui para fácil manutenção
+# URL base da API JSONPlaceholder — API pública e gratuita sem autenticação
+# JSONPlaceholder é um fake JSON API ideal para prototipagem e testes
 # Se a URL mudar, atualizamos apenas nesta constante
-BASE_URL = "https://reqres.in"
+BASE_URL = "https://jsonplaceholder.typicode.com"
 
 
 @pytest.fixture
 def client():
     """
-    Cria e fornece um cliente HTTP configurado para a API Reqres.in.
+    Cria e fornece um cliente HTTP configurado para a API JSONPlaceholder.
 
     Usar um cliente em vez de chamadas avulsas com requests/httpx.get() é melhor porque:
     1. Reutiliza conexões TCP — mais rápido para múltiplas requisições
