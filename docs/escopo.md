@@ -14,7 +14,7 @@ O objetivo era cubrir duas frentes de automação num mesmo repositório: testes
 | Negativos | Credenciais inválidas, usuário bloqueado, acesso sem autenticação, formulário vazio |
 | Problem users | 4 tipos de usuários com bugs intencionais documentados |
 
-### Reqres.in — Automação de API
+### JSONPlaceholder — Automação de API
 
 | Categoria | O que foi testado |
 |-----------|-------------------|
@@ -32,7 +32,7 @@ O objetivo era cubrir duas frentes de automação num mesmo repositório: testes
 | Mobile / responsividade | Fora do escopo desta rodada. |
 | Testes de carga | Requer infraestrutura diferente (k6, Locust). |
 | Acessibilidade | Merece projeto específico com ferramentas próprias. |
-| Persistência real de dados | O Reqres.in simula as operações — não persiste nada. Os testes validam status codes e estrutura da resposta, não estado no banco. |
+| Persistência real de dados | O JSONPlaceholder simula as operações — não persiste nada. Os testes validam status codes e estrutura da resposta, não estado no banco. |
 
 ---
 

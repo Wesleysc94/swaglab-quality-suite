@@ -14,7 +14,7 @@ O QUE VOCÊ VAI ENCONTRAR
                    Testa o SauceDemo — um e-commerce feito pra ter bugs.
 
   /api             Automação de API com pytest e httpx.
-                   Testa o Reqres.in — API REST pública de CRUD.
+                   Testa o JSONPlaceholder — API fake para prototipagem.
 
   /manual          Bug reports dos defeitos encontrados no SauceDemo.
                    6 relatórios com reprodução, evidência e impacto.

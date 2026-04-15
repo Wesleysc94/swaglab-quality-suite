@@ -2,8 +2,8 @@
 
 > Segundo projeto do portfolio de QA — automação E2E, testes de API e documentação de bugs em dois produtos públicos diferentes.
 
-[![E2E Tests](https://img.shields.io/badge/E2E%20Tests-19%20testes-brightgreen)](e2e/tests/)
-[![API Tests](https://img.shields.io/badge/API%20Tests-14%20testes-brightgreen)](api/tests/)
+[![E2E Tests](https://img.shields.io/badge/E2E%20Tests-23%20testes-brightgreen)](e2e/tests/)
+[![API Tests](https://img.shields.io/badge/API%20Tests-17%20testes-brightgreen)](api/tests/)
 [![Bugs documentados](https://img.shields.io/badge/Bugs-6%20relatórios-red)](manual/bug-reports/)
 [![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=github-actions&logoColor=white)](.github/workflows/)
 
@@ -15,7 +15,7 @@
 
 No [primeiro portfolio](https://github.com/Wesleysc94/toolshop-quality-portfolio) testei um único produto em três camadas — manual, API e E2E. Aqui mudei a abordagem: **dois produtos diferentes, cada um com seu conjunto de desafios.**
 
-O [SauceDemo](https://www.saucedemo.com/) é um e-commerce construído com bugs intencionais — o site foi feito pra quebrar. O [Reqres.in](https://reqres.in/) é uma API REST pública para praticar operações de CRUD e autenticação.
+O [SauceDemo](https://www.saucedemo.com/) é um e-commerce construído com bugs intencionais — o site foi feito pra quebrar. O [JSONPlaceholder](https://jsonplaceholder.typicode.com/) é uma API fake pública para praticar operações de CRUD com posts e comentários.
 
 A combinação foi escolhida porque permite praticar uma habilidade que o primeiro portfolio não cobria: **como testar e documentar bugs que você sabe que existem, sem deixar o CI quebrado.**
 
@@ -27,18 +27,18 @@ A combinação foi escolhida porque permite praticar uma habilidade que o primei
 ┌─────────────────────────────────────────────────────────┐
 │                   PRODUTOS SOB TESTE                    │
 ├──────────────────────────┬──────────────────────────────┤
-│      SAUCEDEMO           │         REQRES.IN            │
+│      SAUCEDEMO           │      JSONPLACEHOLDER         │
 │   (automação web E2E)    │      (automação de API)      │
 │                          │                              │
-│  • Login / Logout        │  • CRUD de usuários          │
-│  • Inventário            │  • Autenticação              │
+│  • Login / Logout        │  • CRUD de posts             │
+│  • Inventário            │  • Criação de comentários    │
 │  • Carrinho              │  • Cenários negativos        │
-│  • Checkout completo     │                              │
-│  • Erros de formulário   │                              │
+│  • Checkout completo     │  • Validação de estrutura    │
+│  • Erros de formulário   │  • Filtros e paginação      │
 │  • 4 tipos de usuários   │                              │
 │    com bugs              │                              │
 │                          │                              │
-│  19 testes ✅            │  14 testes ✅               │
+│  23 testes ✅            │  17 testes ✅               │
 │  6 bug reports 🐛        │  100% pass ✅               │
 └──────────────────────────┴──────────────────────────────┘
 ```
@@ -158,7 +158,7 @@ Este projeto cobre três coisas que o portfolio anterior não tinha:
 | Produto | Tipo | URL |
 |---------|------|-----|
 | SauceDemo | E-commerce web com bugs intencionais | https://www.saucedemo.com/ |
-| Reqres.in | API REST pública (CRUD + Auth) | https://reqres.in/ |
+| JSONPlaceholder | API fake pública (CRUD + Comments) | https://jsonplaceholder.typicode.com/ |
 
 ---
 
