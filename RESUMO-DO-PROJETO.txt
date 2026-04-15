@@ -33,13 +33,13 @@ BUG-001  Imagens erradas no inventário         Alta      problem_user
 BUG-002  Campo Last Name bloqueado             Crítica   problem_user
 BUG-003  Carrinho com falhas aleatórias        Alta      error_user
 BUG-004  Campos do checkout não persistem      Alta      error_user
-BUG-005  Login com latência de ~5s             Média     performance_user
+BUG-005  Login com latência de ~5s             Média     performance_glitch_user
 BUG-006  Layout com inconsistências visuais    Média     visual_user
 
 
 COMO EXECUTAR
 -------------
-E2E:   cd e2e && npm install && npx playwright install chromium && npm test
+E2E:   cd e2e && npm ci && npx playwright install chromium && npm test
 API:   cd api && pip install -r requirements.txt && pytest -v
 
 

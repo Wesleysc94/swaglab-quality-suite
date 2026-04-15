@@ -21,7 +21,7 @@ testpaths = ["tests"]
 addopts = "-v --tb=short"
 
 # Marcadores personalizados para categorizar os testes
-# Permite executar apenas uma categoria com: pytest -m crud
+# Permite executar apenas uma categoria com: pytest -m creation
 markers = [
     "crud: testes de operações CRUD (Create, Read, Update, Delete)",
     "creation: testes de criação de posts e comentários",

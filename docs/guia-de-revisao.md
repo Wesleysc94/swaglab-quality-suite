@@ -31,7 +31,7 @@ Três categorias:
 - `problem-users/` — testes que documentam bugs conhecidos sem quebrar o CI
 
 ### Testes de API (`api/tests/`)
-Cada função tem docstring em português explicando o cenário. Cada assert tem mensagem descritiva. Os marcadores (`@pytest.mark.crud`, `@pytest.mark.auth`) permitem rodar categorias separadas.
+Cada função tem docstring em português explicando o cenário. Cada assert tem mensagem descritiva. Os marcadores (`@pytest.mark.crud`, `@pytest.mark.creation`, `@pytest.mark.negative`) permitem rodar categorias separadas.
 
 ### CI/CD (`.github/workflows/`)
 Dois workflows independentes. Cada um filtra por path — mudança em `api/` não roda os testes E2E. Artefatos (relatórios HTML) são salvos mesmo quando os testes falham.

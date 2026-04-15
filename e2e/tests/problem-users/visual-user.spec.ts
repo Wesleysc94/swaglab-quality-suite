@@ -17,6 +17,8 @@ import { USERS } from '../../support/test-data';
  * - BUG-006: Inconsistências visuais no layout (botões, imagens, elementos desalinhados)
  */
 test.describe('Visual User: Inconsistências de Layout', () => {
+  const screenshotPath = '../manual/evidence/screenshots/BUG-006-visual-user-layout.png';
+
   // Pré-condição: login com visual_user
   test.beforeEach(async ({ page }) => {
     const loginPage = new LoginPage(page);
@@ -62,11 +64,11 @@ test.describe('Visual User: Inconsistências de Layout', () => {
     // Captura screenshot para evidência visual do bug
     // O arquivo será salvo automaticamente em caso de falha configurado no playwright.config.ts
     await page.screenshot({
-      path: 'manual/evidence/screenshots/BUG-006-visual-user-layout.png',
+      path: screenshotPath,
       fullPage: true,
     });
 
-    console.log('[BUG-006] Screenshot capturado: manual/evidence/screenshots/BUG-006-visual-user-layout.png');
+    console.log(`[BUG-006] Screenshot capturado: ${screenshotPath}`);
 
     // Verifica inconsistência específica: imagens dos produtos com o visual_user
     const productImages = page.locator('[data-test="inventory-item"] img');

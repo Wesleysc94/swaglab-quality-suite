@@ -1,7 +1,7 @@
 # ==========================================
 # Claude Code (configurações locais do IDE — não versionar)
 # ==========================================
-.claude/settings.local.json
+.claude/
 PROMPT-CLAUDE-CODE.md
 PLANEJAMENTO-SWAGLAB.md
 
@@ -32,6 +32,7 @@ env/
 
 # Relatório HTML do pytest
 api/report.html
+api/pytest_results.txt
 
 # ==========================================
 # IDEs e editores
@@ -49,6 +50,8 @@ Thumbs.db
 *.log
 *.tmp
 *.bak
+e2e-results.json
+e2e-results.txt
 
 # ==========================================
 # Evidências de teste (screenshots/vídeos gerados)
@@ -59,6 +62,8 @@ Thumbs.db
 manual/evidence/screenshots/*.png
 manual/evidence/screenshots/*.jpg
 manual/evidence/videos/
+e2e/manual/
 
 # Mantém a estrutura de pastas no git sem os arquivos gerados
 !manual/evidence/.gitkeep
+!manual/evidence/screenshots/.gitkeep

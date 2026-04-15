@@ -36,7 +36,7 @@ COMO RODAR OS TESTES
 
   E2E (Playwright):
     cd e2e
-    npm install
+    npm ci
     npx playwright install chromium
     npm test
 

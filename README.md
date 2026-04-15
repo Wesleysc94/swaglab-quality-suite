@@ -59,6 +59,7 @@ Bugs encontrados no SauceDemo ao testar com usuários especiais. Cada relatório
 | [BUG-006](manual/bug-reports/BUG-006-visual-user-layout-issues.md) | Layout do inventário com elementos fora do lugar | 🟡 Média | `visual_user` |
 
 > **Nota sobre os testes de bugs:** Os testes dos usuários com problema foram escritos para **passar**, documentando o comportamento defeituoso em vez de falhar o CI. Isso é intencional — bug conhecido no CI só gera ruído.
+> As evidências automatizadas em `manual/evidence/` são geradas localmente pelos testes e não entram no versionamento.
 
 ---
 
@@ -76,8 +77,8 @@ swaglab-quality-suite/
 │
 ├── api/                        ← Automação de API — pytest + httpx
 │   └── tests/
-│       ├── test_users.py       ← CRUD de usuários
-│       ├── test_auth.py        ← Registro e login
+│       ├── test_posts.py       ← CRUD de posts
+│       ├── test_creation.py    ← Criação de posts e comentários
 │       └── test_negative.py    ← Erros esperados
 │
 ├── manual/
@@ -105,7 +106,7 @@ swaglab-quality-suite/
 
 ```bash
 cd e2e
-npm install
+npm ci
 npx playwright install chromium
 npm test                        # todos os testes
 npm run test:smoke              # só o fluxo feliz
@@ -121,7 +122,7 @@ cd api
 pip install -r requirements.txt
 pytest -v                       # todos os testes
 pytest -m crud                  # só operações CRUD
-pytest -m auth                  # só autenticação
+pytest -m creation              # só criação de posts/comentários
 pytest -m negative              # só cenários de erro
 ```
 

@@ -18,9 +18,9 @@ O objetivo era cubrir duas frentes de automação num mesmo repositório: testes
 
 | Categoria | O que foi testado |
 |-----------|-------------------|
-| CRUD | Listar, buscar, criar, atualizar e deletar usuários |
-| Auth | Registro e login — com e sem senha |
-| Negativos | Recurso inexistente, Content-Type, timeout com delay |
+| CRUD | Listar, buscar, filtrar, atualizar e deletar posts |
+| Creation | Criar posts, criar comentários e listar comentários por post |
+| Negativos | Recurso inexistente, Content-Type, filtros sem resultado e operações em IDs inexistentes |
 
 ---
 
