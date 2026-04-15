@@ -4,12 +4,12 @@ SWAGLAB QUALITY SUITE — RESUMO DO PROJETO
 
 OBJETIVO
 --------
-Segundo projeto de portfolio de QA. Automação E2E no SauceDemo
+Estudo de caso de QA com automacao E2E no SauceDemo
 (e-commerce com bugs intencionais) e testes de API no JSONPlaceholder
-(API fake grátis para prototipagem).
+(API fake publica para CRUD, criacao e cenarios negativos).
 
 
-NÚMEROS
+NUMEROS
 -------
 Testes E2E:           23 testes — Playwright + TypeScript
 Testes de API:        17 testes — pytest + httpx
@@ -20,21 +20,20 @@ CI/CD:                2 workflows no GitHub Actions
 
 DESTAQUES
 ---------
-- Testes de problem_user passam documentando bugs sem quebrar o CI
-- Page Object Model: seletores centralizados em classes separadas
-- Dados de teste em test-data.ts — sem strings hardcoded nos testes
-- Cada bug report tem passos de reprodução, evidência e análise de
-  impacto com recomendação Go/No Go
+- Testes de usuarios com bug passam documentando o comportamento conhecido
+- Page Objects centralizam seletores e acoes da automacao web
+- Dados de teste ficam em um unico arquivo de apoio
+- Cada bug report registra reproducao, impacto e recomendacao
 
 
 BUGS ENCONTRADOS (SAUCEDEMO)
 -----------------------------
-BUG-001  Imagens erradas no inventário         Alta      problem_user
-BUG-002  Campo Last Name bloqueado             Crítica   problem_user
-BUG-003  Carrinho com falhas aleatórias        Alta      error_user
-BUG-004  Campos do checkout não persistem      Alta      error_user
-BUG-005  Login com latência de ~5s             Média     performance_glitch_user
-BUG-006  Layout com inconsistências visuais    Média     visual_user
+BUG-001  Imagens erradas no inventario         Alta      problem_user
+BUG-002  Campo Last Name bloqueado             Critica   problem_user
+BUG-003  Carrinho com falhas aleatorias        Alta      error_user
+BUG-004  Campos do checkout nao persistem      Alta      error_user
+BUG-005  Login com latencia de ~5s             Media     performance_glitch_user
+BUG-006  Layout com inconsistencias visuais    Media     visual_user
 
 
 COMO EXECUTAR
@@ -43,11 +42,20 @@ E2E:   cd e2e && npm ci && npx playwright install chromium && npm test
 API:   cd api && pip install -r requirements.txt && pytest -v
 
 
-LEIA TAMBÉM
+LEIA TAMBEM
 -----------
-docs/guia-de-revisao.md   — Trilha para avaliadores (~20 min)
+docs/guia-de-revisao.md   — Trilha para avaliadores
 docs/estrategia.md        — Por que Playwright, POM e pytest
-docs/glossario-qa.md      — 17 termos com exemplos práticos
+docs/glossario-qa.md      — Termos de QA com exemplos praticos
+
+
+PORTFOLIO PRINCIPAL
+-------------------
+github.com/Wesleysc94/Wesleysc94
+
+OUTRO ESTUDO DE CASO
+--------------------
+github.com/Wesleysc94/toolshop-quality-portfolio
 
 
 AUTOR

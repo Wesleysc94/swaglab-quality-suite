@@ -1,6 +1,6 @@
 # Escopo do projeto
 
-O objetivo era cubrir duas frentes de automação num mesmo repositório: testes E2E num e-commerce e testes de API num serviço REST público.
+O objetivo deste estudo de caso foi reunir duas frentes de automação em um mesmo repositório: testes E2E em um e-commerce com bugs intencionais e testes de API em um serviço REST público.
 
 ---
 
@@ -10,9 +10,9 @@ O objetivo era cubrir duas frentes de automação num mesmo repositório: testes
 
 | Categoria | O que foi testado |
 |-----------|-------------------|
-| Smoke | Login, logout, listagem de produtos, carrinho, checkout completo |
-| Negativos | Credenciais inválidas, usuário bloqueado, acesso sem autenticação, formulário vazio |
-| Problem users | 4 tipos de usuários com bugs intencionais documentados |
+| Smoke | Login, logout, listagem de produtos, carrinho e checkout completo |
+| Negativos | Credenciais inválidas, usuário bloqueado, acesso sem autenticação e formulário vazio |
+| Problem users | Usuários especiais com bugs intencionais documentados |
 
 ### JSONPlaceholder — Automação de API
 
@@ -28,21 +28,21 @@ O objetivo era cubrir duas frentes de automação num mesmo repositório: testes
 
 | Item | Motivo |
 |------|--------|
-| Firefox e Safari | O foco foi em Chromium para manter o CI simples. Playwright suporta os outros browsers — seria só adicionar projetos no `playwright.config.ts`. |
+| Firefox e Safari | O foco foi em Chromium para manter a execução simples no CI. |
 | Mobile / responsividade | Fora do escopo desta rodada. |
-| Testes de carga | Requer infraestrutura diferente (k6, Locust). |
-| Acessibilidade | Merece projeto específico com ferramentas próprias. |
-| Persistência real de dados | O JSONPlaceholder simula as operações — não persiste nada. Os testes validam status codes e estrutura da resposta, não estado no banco. |
+| Testes de carga | Requerem ferramentas e cenário próprios. |
+| Acessibilidade | Merece uma frente dedicada com critérios específicos. |
+| Persistência real de dados | O JSONPlaceholder simula operações; os testes validam status code e estrutura, não persistência real. |
 
 ---
 
 ## Decisões de escopo
 
 **Por que dois produtos?**
-O primeiro portfolio testou um único produto nas três camadas. Aqui a escolha foi propositalmente diferente: dois produtos com características distintas para exercitar adaptação de abordagem.
+Porque a proposta deste estudo de caso é exercitar automação em contextos diferentes: uma aplicação web com bugs conhecidos e uma API pública voltada para prototipagem.
 
-**Por que os testes de problem_user passam?**
-Bug conhecidos que quebram o CI geram ruído. A decisão foi: o teste executa, confirma que o bug existe, registra no console e passa. O bug fica documentado no relatório e no `manual/bug-reports/` — rastreável sem atrapalhar o pipeline.
+**Por que os testes de `problem_user` passam?**
+Porque o objetivo desses cenários é documentar comportamento defeituoso conhecido sem quebrar o pipeline a cada execução.
 
 **Por que centralizar os dados de teste?**
-Tudo fica em `e2e/support/test-data.ts`. Sem strings soltas nos testes. Se um usuário ou produto mudar no SauceDemo, atualiza em um lugar.
+Porque isso reduz repetição, evita strings soltas nos testes e facilita manutenção.

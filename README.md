@@ -1,23 +1,36 @@
 # 🧪 swaglab-quality-suite
 
-> Segundo projeto do portfolio de QA — automação E2E, testes de API e documentação de bugs em dois produtos públicos diferentes.
+> Estudo de caso de QA com automação E2E no SauceDemo, testes de API no JSONPlaceholder e documentação de bugs conhecidos.
+
+**English summary:** QA case study combining E2E automation on SauceDemo, API automation on JSONPlaceholder, and bug documentation designed to keep CI clean while preserving traceability.
 
 [![E2E Tests](https://img.shields.io/badge/E2E%20Tests-23%20testes-brightgreen)](e2e/tests/)
 [![API Tests](https://img.shields.io/badge/API%20Tests-17%20testes-brightgreen)](api/tests/)
 [![Bugs documentados](https://img.shields.io/badge/Bugs-6%20relatórios-red)](manual/bug-reports/)
 [![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=github-actions&logoColor=white)](.github/workflows/)
 
-📦 **Parte do portfolio:** [toolshop-quality-portfolio](https://github.com/Wesleysc94/toolshop-quality-portfolio)
+🔎 **Portfolio principal:** [Wesleysc94](https://github.com/Wesleysc94/Wesleysc94)
+📦 **Outro estudo de caso:** [toolshop-quality-portfolio](https://github.com/Wesleysc94/toolshop-quality-portfolio)
 
 ---
 
-## Por que este projeto existe
+## Objetivo
 
-No [primeiro portfolio](https://github.com/Wesleysc94/toolshop-quality-portfolio) testei um único produto em três camadas — manual, API e E2E. Aqui mudei a abordagem: **dois produtos diferentes, cada um com seu conjunto de desafios.**
+Reunir em um único repositório duas frentes complementares de QA:
 
-O [SauceDemo](https://www.saucedemo.com/) é um e-commerce construído com bugs intencionais — o site foi feito pra quebrar. O [JSONPlaceholder](https://jsonplaceholder.typicode.com/) é uma API fake pública para praticar operações de CRUD com posts e comentários.
+- automação web E2E em um produto com bugs intencionais
+- automação de API em um serviço público usado para praticar CRUD, criação e cenários negativos
 
-A combinação foi escolhida porque permite praticar uma habilidade que o primeiro portfolio não cobria: **como testar e documentar bugs que você sabe que existem, sem deixar o CI quebrado.**
+O foco deste estudo de caso é cobertura técnica, documentação rastreável e uma estratégia para ambientes em que alguns bugs já são conhecidos e não devem poluir o CI.
+
+---
+
+## Produtos testados
+
+| Produto | Tipo | URL |
+|---------|------|-----|
+| SauceDemo | E-commerce web com bugs intencionais | https://www.saucedemo.com/ |
+| JSONPlaceholder | API fake pública (CRUD + comments) | https://jsonplaceholder.typicode.com/ |
 
 ---
 
@@ -34,9 +47,8 @@ A combinação foi escolhida porque permite praticar uma habilidade que o primei
 │  • Inventário            │  • Criação de comentários    │
 │  • Carrinho              │  • Cenários negativos        │
 │  • Checkout completo     │  • Validação de estrutura    │
-│  • Erros de formulário   │  • Filtros e paginação      │
-│  • 4 tipos de usuários   │                              │
-│    com bugs              │                              │
+│  • Erros de formulário   │  • Filtros e paginação       │
+│  • Usuários com bugs     │                              │
 │                          │                              │
 │  23 testes ✅            │  17 testes ✅               │
 │  6 bug reports 🐛        │  100% pass ✅               │
@@ -45,9 +57,9 @@ A combinação foi escolhida porque permite praticar uma habilidade que o primei
 
 ---
 
-## 🐛 Bug Reports
+## Bug reports
 
-Bugs encontrados no SauceDemo ao testar com usuários especiais. Cada relatório tem passos de reprodução, análise de impacto e recomendação Go/No Go.
+Bugs encontrados no SauceDemo ao testar usuários especiais. Cada relatório traz passos de reprodução, impacto e recomendação de decisão.
 
 | ID | Bug | Severidade | Usuário |
 |----|-----|:----------:|---------|
@@ -58,8 +70,8 @@ Bugs encontrados no SauceDemo ao testar com usuários especiais. Cada relatório
 | [BUG-005](manual/bug-reports/BUG-005-performance-user-login-delay.md) | Login demora ~5 segundos para responder | 🟡 Média | `performance_glitch_user` |
 | [BUG-006](manual/bug-reports/BUG-006-visual-user-layout-issues.md) | Layout do inventário com elementos fora do lugar | 🟡 Média | `visual_user` |
 
-> **Nota sobre os testes de bugs:** Os testes dos usuários com problema foram escritos para **passar**, documentando o comportamento defeituoso em vez de falhar o CI. Isso é intencional — bug conhecido no CI só gera ruído.
-> As evidências automatizadas em `manual/evidence/` são geradas localmente pelos testes e não entram no versionamento.
+> Os testes dos usuários com bug foram escritos para **passar documentando o comportamento defeituoso**. Isso mantém o bug rastreável sem transformar o CI em ruído constante.
+> As evidências automatizadas em `manual/evidence/` são geradas localmente e não entram no versionamento.
 
 ---
 
@@ -68,12 +80,12 @@ Bugs encontrados no SauceDemo ao testar com usuários especiais. Cada relatório
 ```
 swaglab-quality-suite/
 ├── e2e/                        ← Automação web — Playwright + TypeScript
-│   ├── pages/                  ← Page Objects (LoginPage, CartPage, etc.)
+│   ├── pages/                  ← Page Objects
 │   ├── support/                ← Dados de teste centralizados
 │   └── tests/
-│       ├── smoke/              ← Fluxo feliz (login, carrinho, checkout)
+│       ├── smoke/              ← Fluxo feliz
 │       ├── negative/           ← Erros e validações
-│       └── problem-users/      ← Testes documentando bugs conhecidos
+│       └── problem-users/      ← Bugs conhecidos documentados
 │
 ├── api/                        ← Automação de API — pytest + httpx
 │   └── tests/
@@ -86,9 +98,9 @@ swaglab-quality-suite/
 │
 ├── docs/
 │   ├── escopo.md               ← O que entra e o que fica de fora
-│   ├── estrategia.md           ← Por que cada ferramenta foi escolhida
-│   ├── glossario-qa.md         ← 17 termos de QA com exemplos práticos
-│   └── guia-de-revisao.md      ← Trilha de leitura (~30 min)
+│   ├── estrategia.md           ← Escolhas de ferramentas e abordagem
+│   ├── glossario-qa.md         ← Termos de QA com exemplos práticos
+│   └── guia-de-revisao.md      ← Trilha de leitura
 │
 └── .github/workflows/          ← CI/CD automatizado
 ```
@@ -108,11 +120,11 @@ swaglab-quality-suite/
 cd e2e
 npm ci
 npx playwright install chromium
-npm test                        # todos os testes
-npm run test:smoke              # só o fluxo feliz
-npm run test:negative           # erros e validações
-npm run test:problem-users      # testes de bugs conhecidos
-npm run report                  # abre o relatório HTML
+npm test
+npm run test:smoke
+npm run test:negative
+npm run test:problem-users
+npm run report
 ```
 
 ### Automação de API (pytest)
@@ -120,23 +132,11 @@ npm run report                  # abre o relatório HTML
 ```bash
 cd api
 pip install -r requirements.txt
-pytest -v                       # todos os testes
-pytest -m crud                  # só operações CRUD
-pytest -m creation              # só criação de posts/comentários
-pytest -m negative              # só cenários de erro
+pytest -v
+pytest -m crud
+pytest -m creation
+pytest -m negative
 ```
-
----
-
-## Por que isso importa
-
-Este projeto cobre três coisas que o portfolio anterior não tinha:
-
-1. **Testes em múltiplos produtos** — mostra capacidade de adaptar a abordagem para produtos com características diferentes.
-
-2. **Documentação de bugs conhecidos sem quebrar o CI** — o teste passa, registra o problema no console e no relatório. O bug fica rastreável sem gerar alarme falso.
-
-3. **Page Object Model** — todos os seletores ficam centralizados em classes separadas. Se o SauceDemo mudar o HTML, ajusta em um lugar e todos os testes continuam funcionando.
 
 ---
 
@@ -146,20 +146,21 @@ Este projeto cobre três coisas que o portfolio anterior não tinha:
 |-------|-----------|-------|
 | 1 | [RESUMO-DO-PROJETO.txt](RESUMO-DO-PROJETO.txt) | 2 min |
 | 2 | [docs/guia-de-revisao.md](docs/guia-de-revisao.md) | 3 min |
-| 3 | [Bug reports](manual/bug-reports/) — BUG-001 e BUG-002 | 5 min |
-| 4 | [e2e/pages/](e2e/pages/) — como o POM foi implementado | 5 min |
+| 3 | [manual/bug-reports/](manual/bug-reports/) — BUG-001 e BUG-002 | 5 min |
+| 4 | [e2e/pages/](e2e/pages/) — Page Objects | 5 min |
 | 5 | [api/tests/](api/tests/) — estrutura dos testes de API | 5 min |
 
-> ⏱️ **Revisão completa em ~20 minutos.**
+> ⏱️ Revisão completa em ~20 minutos.
 
 ---
 
-## Produtos testados
+## O que este estudo de caso entrega
 
-| Produto | Tipo | URL |
-|---------|------|-----|
-| SauceDemo | E-commerce web com bugs intencionais | https://www.saucedemo.com/ |
-| JSONPlaceholder | API fake pública (CRUD + Comments) | https://jsonplaceholder.typicode.com/ |
+- **Automação em produtos diferentes** — web com comportamento bugado e API fake pública
+- **Bug documentation sem ruído no CI** — rastreabilidade sem alerta falso permanente
+- **POM e organização de suíte** — seletores centralizados e categorias de testes claras
+- **CI/CD prático** — dois workflows independentes para web e API
+- **Navegação orientada** — docs, resumos e ordem de revisão para avaliadores
 
 ---
 

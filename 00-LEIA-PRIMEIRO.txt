@@ -2,19 +2,22 @@
 SWAGLAB QUALITY SUITE — LEIA PRIMEIRO
 ====================================================================
 
-Este é o segundo projeto do meu portfolio de QA.
+Este repositório apresenta um estudo de caso de QA com duas frentes:
 
-Se é a primeira vez que você abre este repositório, comece aqui.
+- automação web E2E no SauceDemo
+- automação de API no JSONPlaceholder
+
+Se é a primeira vez que você abre este projeto, comece aqui.
 
 
 O QUE VOCÊ VAI ENCONTRAR
 -------------------------
 
   /e2e             Automação web com Playwright e TypeScript.
-                   Testa o SauceDemo — um e-commerce feito pra ter bugs.
+                   Testa o SauceDemo — um e-commerce com bugs intencionais.
 
   /api             Automação de API com pytest e httpx.
-                   Testa o JSONPlaceholder — API fake para prototipagem.
+                   Testa o JSONPlaceholder — API fake para CRUD e cenários negativos.
 
   /manual          Bug reports dos defeitos encontrados no SauceDemo.
                    6 relatórios com reprodução, evidência e impacto.
@@ -46,10 +49,15 @@ COMO RODAR OS TESTES
     pytest -v
 
 
-PRIMEIRO PORTFOLIO
-------------------
-Se quiser ver o projeto anterior (QA manual + API + E2E num único
-produto), acesse:
+PORTFOLIO PRINCIPAL
+-------------------
+Se quiser ver a vitrine completa do portfolio, acesse:
+
+  github.com/Wesleysc94/Wesleysc94
+
+OUTRO ESTUDO DE CASO
+--------------------
+Se quiser ver o estudo de caso sobre Practice Software Testing, acesse:
 
   github.com/Wesleysc94/toolshop-quality-portfolio
 
